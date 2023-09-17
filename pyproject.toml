@@ -1,0 +1,22 @@
+[project]
+name = "micro-admin-videos"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Luiz Carlos", email = "argentinaluiz@gmail.com"},
+]
+dependencies = [
+]
+requires-python = ">=3.12.0rc2"
+readme = "README.md"
+license = {text = "MIT"}
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "pytest>=7.4.2",
+    "autopep8>=2.0.4",
+]
