@@ -39,7 +39,6 @@ class SearchParams(Generic[Filter]):
                       init_sort: str | None,
                       init_sort_dir: SortDirectionValues | SortDirection | None,
                       init_filter: Filter | None):
-        print(init_per_page)
         self._normalize_page(init_page)
         self._normalize_per_page(init_per_page)
         self._normalize_sort(init_sort)
@@ -53,9 +52,7 @@ class SearchParams(Generic[Filter]):
         self.page = page
 
     def _normalize_per_page(self, per_page: int | None):
-        print(per_page)
         per_page = _int_or_none(per_page)
-        print(per_page)
         if per_page < 1:
             per_page = cast(int, self.get_field('per_page').default)
         self.per_page = per_page

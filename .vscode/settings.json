@@ -13,5 +13,12 @@
     ],
     "python.analysis.autoImportCompletions": true,
     "python.analysis.indexing": true,
+    "python.analysis.packageIndexDepths": [
+        {
+            "name": "django",
+            "includeAllSymbols": true,
+            "depth": 20
+        },
+    ],
     //"python.terminal.activateEnvironment": true
 }

@@ -32,7 +32,7 @@ class TestCategory:
         category_id = Uuid()
         category1 = Category(category_id=category_id, name='Test Category 1')
         category2 = Category(category_id=category_id, name='Test Category 1')
-        assert category1 == category2
+        assert category1.equals(category2)
 
     def test_should_not_be_equal_to_another_category_with_a_different_id(self):
         category1 = Category(category_id=Uuid(), name='Test Category')
@@ -43,7 +43,6 @@ class TestCategory:
         category = Category(category_id=Uuid(), name='Test Category')
         category.change_name(1)  # type: ignore
         assert category.notification.has_errors() is True
-        print(category.notification.errors)
         assert len(category.notification.errors) == 1
         assert isinstance(category.notification.errors[0], ValidationError)
         assert category.notification.errors[0].errors(
@@ -153,7 +152,6 @@ class TestCategory:
                                                              expected: List[Dict[str, Any]]):
         with pytest.raises(ValidationError) as e:
             Category(**_input)
-        print(e.value.errors())
         assert len(e.value.errors()) == len(expected)
 
         # sourcery skip: no-loop-in-tests

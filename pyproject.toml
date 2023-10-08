@@ -7,6 +7,7 @@ authors = [
 ]
 dependencies = [
     "pydantic>=2.4.2",
+    "django>=4.2.6",
 ]
 requires-python = ">=3.12.0rc2"
 readme = "README.md"
@@ -21,4 +22,6 @@ dev = [
     "pytest>=7.4.2",
     "autopep8>=2.0.4",
     "pylint>=3.0.1",
+    "pytest-django>=4.5.2",
+    "Faker>=19.6.2",
 ]

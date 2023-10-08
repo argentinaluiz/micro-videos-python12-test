@@ -10,7 +10,7 @@ from core.shared.domain.value_objects import Uuid
 
 class TestEntity:
 
-    @dataclass(slots=True, eq=False, kw_only=True)
+    @dataclass(slots=True, kw_only=True)
     class StubEntity(Entity):
         _entity_id: Uuid
         name: str
@@ -35,7 +35,6 @@ class TestEntity:
         entity.name = 1  # type: ignore
         entity.validate()
         assert entity.notification.has_errors() is True
-        print(entity.notification.errors)
         assert len(entity.notification.errors) == 1
         assert isinstance(entity.notification.errors[0], ValidationError)
         assert entity.notification.errors[0].errors(
@@ -49,7 +48,7 @@ class TestEntity:
         entity_id = Uuid()
         entity1 = TestEntity.StubEntity(_entity_id=entity_id, name='stub1')
         entity2 = TestEntity.StubEntity(_entity_id=entity_id, name='stub2')
-        assert entity1 == entity2
+        assert entity1.equals(entity2)
 
     def test_should_not_be_equal_to_another_entity_with_a_different_id(self):
 

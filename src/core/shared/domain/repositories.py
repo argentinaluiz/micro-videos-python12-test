@@ -13,12 +13,13 @@ ET = TypeVar('ET', bound=Entity)
 EntityId = TypeVar('EntityId', bound=ValueObject)
 
 
-class RepositoryInterface(Generic[ET, EntityId], abc.ABC):
+class IRepository(Generic[ET, EntityId], abc.ABC):
 
     @abc.abstractmethod
     def insert(self, entity: ET) -> None:
         raise NotImplementedError()
 
+    @abc.abstractmethod
     def bulk_insert(self, entities: List[ET]) -> None:
         raise NotImplementedError()
 
@@ -39,7 +40,7 @@ class RepositoryInterface(Generic[ET, EntityId], abc.ABC):
         raise NotImplementedError()
 
     @abc.abstractmethod
-    def get_entity(self) -> Type[Entity]:
+    def get_entity(self) -> Type[ET]:
         raise NotImplementedError()
 
 
@@ -47,19 +48,19 @@ Input = TypeVar('Input')
 Output = TypeVar('Output')
 
 
-class SearchableRepositoryInterface(
+class ISearchableRepository(
         Generic[ET, EntityId, Input, Output],
-        RepositoryInterface[ET, EntityId], abc.ABC):
+        IRepository[ET, EntityId], abc.ABC):
 
     sortable_fields: List[str] = []
 
     @abc.abstractmethod
-    def search(self, _input: Input) -> Output:
+    def search(self, input_params: Input) -> Output:
         raise NotImplementedError()
 
 
 @dataclass(slots=True)
-class InMemoryRepository(RepositoryInterface[ET, EntityId], abc.ABC):
+class InMemoryRepository(IRepository[ET, EntityId], abc.ABC):
     items: List[ET] = field(default_factory=lambda: [])
 
     def insert(self, entity: ET) -> None:
@@ -76,6 +77,11 @@ class InMemoryRepository(RepositoryInterface[ET, EntityId], abc.ABC):
 
     def update(self, entity: ET) -> None:
         entity_found = self._get(entity.entity_id)  # type: ignore
+
+        if not entity_found:
+            raise NotFoundException(
+                entity.entity_id, str(self.get_entity().__class__))
+
         index = self.items.index(entity_found)
         self.items[index] = entity
 
@@ -89,11 +95,12 @@ class InMemoryRepository(RepositoryInterface[ET, EntityId], abc.ABC):
     def _get(self, entity_id: EntityId) -> ET | None:
         return next(filter(lambda i: i.entity_id == entity_id, self.items), None)
 
+
 @dataclass(slots=True)
 class InMemorySearchableRepository(
     Generic[ET, EntityId, Filter, ],
     InMemoryRepository[ET, EntityId],
-    SearchableRepositoryInterface[
+    ISearchableRepository[
         ET,
         EntityId,
         SearchParams[Filter],

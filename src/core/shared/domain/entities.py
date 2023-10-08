@@ -7,7 +7,7 @@ from core.shared.domain.notification import Notification
 from core.shared.domain.value_objects import ValueObject
 
 
-@dataclass(slots=True, eq=False)
+@dataclass(slots=True)
 class Entity(ABC):
 
     notification: Notification = field(init=False)
@@ -20,8 +20,8 @@ class Entity(ABC):
     def entity_id(self) -> ValueObject:
         raise NotImplementedError()
 
-    def __eq__(self, other: Any):
-        if not isinstance(other, Entity):
+    def equals(self, other: Any):
+        if not isinstance(other, self.__class__):
             return False
         return self.entity_id == other.entity_id
 

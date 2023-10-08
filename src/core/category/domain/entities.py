@@ -6,10 +6,7 @@ from typing_extensions import Annotated
 from core.shared.domain.entities import Entity
 from core.shared.domain.value_objects import Uuid
 
-# , config=config)
-
-
-@dataclass(slots=True, eq=False, kw_only=True)
+@dataclass(slots=True, kw_only=True)
 class Category(Entity):
     category_id: Uuid = field(default_factory=Uuid)
     name: str = Field(max_length=255)
@@ -47,3 +44,8 @@ class Category(Entity):
             })
         except ValidationError as e:
             self.notification.add_error(e)
+
+    @staticmethod
+    def fake(): #type: ignore
+        from .entities_fake_builder import CategoryFakerBuilder # pylint: disable=import-outside-toplevel
+        return CategoryFakerBuilder #type: ignore

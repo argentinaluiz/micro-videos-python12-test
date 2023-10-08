@@ -8,7 +8,7 @@ from core.shared.domain.value_objects import Uuid, ValueObject
 import pytest
 
 
-@dataclass(slots=True, eq=False)
+@dataclass(slots=True)
 class StubEntity(Entity):
     id: Uuid
     name: str
