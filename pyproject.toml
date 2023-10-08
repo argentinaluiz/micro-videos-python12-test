@@ -6,6 +6,7 @@ authors = [
     {name = "Luiz Carlos", email = "argentinaluiz@gmail.com"},
 ]
 dependencies = [
+    "pydantic>=2.4.2",
 ]
 requires-python = ">=3.12.0rc2"
 readme = "README.md"
@@ -19,4 +20,5 @@ build-backend = "pdm.backend"
 dev = [
     "pytest>=7.4.2",
     "autopep8>=2.0.4",
+    "pylint>=3.0.1",
 ]
