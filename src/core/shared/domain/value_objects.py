@@ -23,6 +23,9 @@ class Uuid(ValueObject):
             PythonUUID(self.id)
         except ValueError as ex:
             raise InvalidUuidException(self.id) from ex
+    
+    def __str__(self):
+        return self.id
 
 
 class InvalidUuidException(Exception):

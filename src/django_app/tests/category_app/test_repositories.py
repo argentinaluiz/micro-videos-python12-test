@@ -140,7 +140,6 @@ class TestCategoryDjangoRepository:
             lambda self, index: datetime.datetime.now(
                 datetime.timezone.utc) + datetime.timedelta(days=index)
         ).build()
-        print(entities)
         self.repo.bulk_insert(entities)
         entities.reverse()
 

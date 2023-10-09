@@ -126,7 +126,7 @@ class UpdateCategoryUseCase(UseCase):
         if input_param.name is not None:
             entity.change_name(input_param.name)
 
-        if input_param.description == MISSING:  # type: ignore
+        if input_param.description != MISSING:  # type: ignore
             entity.change_description(input_param.description)
 
         if input_param.is_active is True:

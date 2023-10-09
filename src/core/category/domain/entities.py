@@ -23,7 +23,7 @@ class Category(Entity):
         self.name = name
         self.validate()
 
-    def change_description(self, description: str):
+    def change_description(self, description: str | None):
         self.description = description
         self.validate()
 

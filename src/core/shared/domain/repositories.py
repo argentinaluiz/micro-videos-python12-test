@@ -76,7 +76,7 @@ class InMemoryRepository(IRepository[ET, EntityId], abc.ABC):
 
         if not entity_found:
             raise NotFoundException(
-                entity.entity_id, str(self.get_entity().__class__))
+                entity.entity_id, str(self.get_entity().__name__))
 
         index = self.items.index(entity_found)
         self.items[index] = entity
@@ -86,7 +86,7 @@ class InMemoryRepository(IRepository[ET, EntityId], abc.ABC):
             self.items.remove(entity_found)
         else:
             raise NotFoundException(
-                entity_id, str(self.get_entity().__class__))
+                str(entity_id), str(self.get_entity().__name__))
 
     def _get(self, entity_id: EntityId) -> ET | None:
         return next(filter(lambda i: i.entity_id == entity_id, self.items), None)

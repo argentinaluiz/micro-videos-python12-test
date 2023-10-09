@@ -4,7 +4,7 @@ from dataclasses import dataclass as python_dataclass
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from typing import Any, Generic, List, TypeVar, TypedDict
 
-from core.shared.domain.search_params import SearchResult, SortDirection
+from core.shared.domain.search_params import SearchResult, SortDirection, SortDirectionValues
 
 
 class UseCase(ABC):
@@ -22,7 +22,7 @@ class SearchInput(Generic[Filter]):
     page: int | None = None
     per_page: int | None = None
     sort: str | None = None
-    sort_dir: SortDirection | None = None
+    sort_dir: SortDirection | SortDirectionValues | None = None
     filter: Filter | None = None
 
     def to_repository_input(self):
@@ -30,7 +30,7 @@ class SearchInput(Generic[Filter]):
             'init_page': int | None,
             'init_per_page': int | None,
             'init_sort': str | None,
-            'init_sort_dir': SortDirection | None,
+            'init_sort_dir': SortDirection | SortDirectionValues | None,
             'init_filter': Filter | None
         })
         return typed_dict(
