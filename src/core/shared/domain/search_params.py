@@ -3,9 +3,6 @@ from enum import Enum
 import math
 from typing import Any, Generic, List, Literal, TypeVar, cast
 
-from core.shared.domain.entities import Entity
-
-
 class SortDirection(Enum):
     ASC = 'asc'
     DESC = 'desc'
@@ -92,12 +89,12 @@ def _int_or_none(value: Any, default: int = 0) -> int:
         return default
 
 
-ET = TypeVar('ET', Entity, Any)
+SearchResultItem = TypeVar('SearchResultItem', bound=Any)
 
 # usar frozen causa um bug
 @dataclass(slots=True, kw_only=True)
-class SearchResult(Generic[ET]):
-    items: List[ET]
+class SearchResult(Generic[SearchResultItem]):
+    items: List[SearchResultItem]
     total: int
     current_page: int
     per_page: int

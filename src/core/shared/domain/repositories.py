@@ -2,7 +2,7 @@
 
 import abc
 from dataclasses import dataclass, field
-from typing import Generic, List, Type, TypeVar
+from typing import Any, Generic, List, Type, TypeVar
 from core.shared.domain.entities import Entity
 from core.shared.domain.exceptions import NotFoundException
 from core.shared.domain.search_params import Filter, SearchParams, SearchResult, SortDirection
@@ -44,18 +44,14 @@ class IRepository(Generic[ET, EntityId], abc.ABC):
         raise NotImplementedError()
 
 
-Input = TypeVar('Input')
-Output = TypeVar('Output')
-
-
 class ISearchableRepository(
-        Generic[ET, EntityId, Input, Output],
+        Generic[ET, EntityId],
         IRepository[ET, EntityId], abc.ABC):
 
     sortable_fields: List[str] = []
 
     @abc.abstractmethod
-    def search(self, input_params: Input) -> Output:
+    def search(self, input_params: Any) -> Any:
         raise NotImplementedError()
 
 
@@ -98,13 +94,11 @@ class InMemoryRepository(IRepository[ET, EntityId], abc.ABC):
 
 @dataclass(slots=True)
 class InMemorySearchableRepository(
-    Generic[ET, EntityId, Filter, ],
+    Generic[ET, EntityId, Filter],
     InMemoryRepository[ET, EntityId],
     ISearchableRepository[
         ET,
         EntityId,
-        SearchParams[Filter],
-        SearchResult[ET]
     ],
     abc.ABC
 ):

@@ -190,7 +190,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        1, 0
+                        1, 0 # type: ignore
                     ],
                     total=5,
                     current_page=1,
@@ -206,7 +206,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        4, 2
+                        4, 2 # type: ignore
                     ],
                     total=5,
                     current_page=2,
@@ -222,7 +222,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        3, 2
+                        3, 2 # type: ignore
                     ],
                     total=5,
                     current_page=1,
@@ -239,7 +239,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        4, 0
+                        4, 0 # type: ignore
                     ],
                     total=5,
                     current_page=2,
@@ -263,7 +263,7 @@ class TestCategoryDjangoRepository:
         self.repo.bulk_insert(entities)
 
         search_result = self.repo.search(search_params)
-        expected_search_output.items = [entities[i]
+        expected_search_output.items = [entities[i] # type: ignore
                                         for i in expected_search_output.items]
         assert search_result == expected_search_output
 

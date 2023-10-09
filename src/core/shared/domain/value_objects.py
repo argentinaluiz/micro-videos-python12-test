@@ -26,5 +26,5 @@ class Uuid(ValueObject):
 
 
 class InvalidUuidException(Exception):
-    def __init__(self, id: str):
-        super().__init__(f'ID {id} must be a valid UUID')
+    def __init__(self, _id: str):
+        super().__init__(f'ID {_id} must be a valid UUID')

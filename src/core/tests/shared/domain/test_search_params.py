@@ -1,7 +1,14 @@
 from dataclasses import InitVar
 
 import pytest
-from core.shared.domain.search_params import ET, SearchParams, SearchResult, SortDirection, Filter, SortDirectionValues
+from core.shared.domain.search_params import (
+    SearchParams,
+    SearchResult,
+    SearchResultItem,
+    SortDirection,
+    Filter,
+    SortDirectionValues
+)
 from typing import List, Optional, Any
 
 
@@ -137,13 +144,14 @@ class TestSearchResult:
 
     def test_props_annotations(self):
         annotations = SearchResult.__annotations__
-        assert annotations.keys() == {'items', 'total', 'current_page', 'per_page', 'last_page'}
-        assert annotations['items'] == List[ET] # type: ignore
+        assert annotations.keys() == {
+            'items', 'total', 'current_page', 'per_page', 'last_page'}
+        assert annotations['items'] == List[SearchResultItem]  # type: ignore
         assert annotations['total'] == int
         assert annotations['current_page'] == int
         assert annotations['per_page'] == int
         assert annotations['last_page'] == int
-    
+
     def test_last_page_calculation(self):
         items = [1, 2, 3, 4, 5]
         total = 17

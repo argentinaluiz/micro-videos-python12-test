@@ -18,11 +18,6 @@ class _SearchResult(DefaultSearchResult[Category]):  # pylint: disable=too-few-p
     pass
 
 
-class ICategoryRepository(
-    ISearchableRepository[
-        Category, Uuid, _SearchParams, _SearchResult
-    ],
-    ABC
-):
+class ICategoryRepository(ISearchableRepository[Category, Uuid], ABC):
     SearchParams = _SearchParams
     SearchResult = _SearchResult
