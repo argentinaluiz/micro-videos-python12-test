@@ -226,7 +226,7 @@ class TestInMemorySearchableRepository:
                 init_page=1, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
-                items=[1, 0],
+                items=[1, 0], # type: ignore
                 total=5,
                 current_page=1,
                 per_page=2,
@@ -238,7 +238,7 @@ class TestInMemorySearchableRepository:
                 init_page=2, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
-                items=[4, 2],
+                items=[4, 2], # type: ignore
                 total=5,
                 current_page=2,
                 per_page=2,
@@ -250,7 +250,7 @@ class TestInMemorySearchableRepository:
                 init_page=3, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
-                items=[3],
+                items=[3], # type: ignore
                 total=5,
                 current_page=3,
                 per_page=2,
@@ -262,7 +262,7 @@ class TestInMemorySearchableRepository:
                 init_page=1, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
-                items=[3, 2],
+                items=[3, 2], # type: ignore
                 total=5,
                 current_page=1,
                 per_page=2,
@@ -274,7 +274,7 @@ class TestInMemorySearchableRepository:
                 init_page=2, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
-                items=[4, 0],
+                items=[4, 0], # type: ignore
                 total=5,
                 current_page=2,
                 per_page=2,
@@ -307,7 +307,7 @@ class TestInMemorySearchableRepository:
         self.repository.bulk_insert(items)
 
         result = self.repository.search(search_params)
-        expected_search_output.items = [items[i]
+        expected_search_output.items = [items[i] # type: ignore
                                         for i in expected_search_output.items]
         assert result == expected_search_output
 
