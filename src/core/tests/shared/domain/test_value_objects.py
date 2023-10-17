@@ -21,7 +21,10 @@ class TestUuid:
         assert Uuid.__dataclass_params__.frozen is True  # pylint: disable=no-member # type: ignore
 
     def test_should_be_slots(self):
-        assert Uuid.__dataclass_params__.slots is True  # pylint: disable=no-member # type: ignore
+        print(vars(Uuid))
+        #python 12
+        #assert Uuid.__dataclass_params__.slots is True  # pylint: disable=no-member # type: ignore
+        assert Uuid.__slots__ == ('id', )
 
     def test_should_throw_an_exception_when_invalid_uuid(self):
         with pytest.raises(InvalidUuidException) as assert_exception:

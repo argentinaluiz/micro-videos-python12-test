@@ -61,14 +61,6 @@ class CategoryFakerBuilder(Generic[T]):
         self.__created_at = value
         return self
 
-    def with_invalid_name_none(self):
-        self.__name = None
-        return self
-
-    def with_invalid_name_empty(self):
-        self.__name = ""
-        return self
-
     def with_invalid_name_too_long(self, value: str = None):
         self.__name = value if value is not None else ''.join(
             Faker().random_letters(length=256)

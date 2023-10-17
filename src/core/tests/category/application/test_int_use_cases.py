@@ -6,7 +6,7 @@ import pytest
 from core.category.application.use_cases import CreateCategoryUseCase, DeleteCategoryUseCase, GetCategoryUseCase, ListCategoriesUseCase, UpdateCategoryUseCase
 from core.category.domain.entities import Category
 from core.category.domain.repositories import ICategoryRepository
-from core.shared.domain.exceptions import NotFoundException
+from core.shared.domain.exceptions import EntityValidationException, NotFoundException
 from core.shared.domain.value_objects import Uuid
 from django_app.category_app.models import CategoryDjangoRepository
 from _pytest.fixtures import SubRequest
@@ -265,6 +265,16 @@ class TestIntUpdateCategoryUseCase:
         assert str(assert_error.value) == str(NotFoundException(
             _id, Category.__name__
         ))
+
+    def test_throw_exception_when_name_is_too_long(self):
+        entity = Category.fake().a_category().build()
+        self.repo.insert(entity)
+        request = UpdateCategoryUseCase.Input(
+            id=entity.category_id.id,  # type: ignore
+            name='t' * 256
+        )
+        with pytest.raises(EntityValidationException):
+            self.use_case.execute(request)
 
     @pytest.fixture
     def execute_fixture(self, request: SubRequest):

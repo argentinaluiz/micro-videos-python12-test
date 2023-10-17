@@ -16,7 +16,7 @@ from _pytest.fixtures import SubRequest
 from core.shared.domain.exceptions import NotFoundException
 
 
-class TestCategoryOutput:
+class TestCategoryOutputUnit:
 
     def test_fields(self):
         assert CategoryOutput.__annotations__, {
@@ -170,8 +170,7 @@ class TestGetCategoryUseCaseUnit:
         input_param = GetCategoryUseCase.Input(uuid4())
         with pytest.raises(NotFoundException) as assert_error:
             self.use_case.execute(input_param)
-        assert assert_error.value.args[0] == f"Category with id {
-            input_param.id} not found"
+        assert assert_error.value.args[0] == f"Category with id {input_param.id} not found"
 
     def test_output(self):
         assert issubclass(GetCategoryUseCase.Output, CategoryOutput)
@@ -432,8 +431,7 @@ class TestUpdateCategoryUseCase:
         request = UpdateCategoryUseCase.Input(id=_id)
         with pytest.raises(NotFoundException) as assert_error:
             self.use_case.execute(request)
-        assert assert_error.value.args[0] == f"Category with id {
-            str(_id)} not found"
+        assert assert_error.value.args[0] == f"Category with id {str(_id)} not found"
 
     # Defina a fixture dentro da classe
     @pytest.fixture
@@ -539,8 +537,7 @@ class TestDeleteCategoryUseCase:
         input_param = DeleteCategoryUseCase.Input(uuid4())
         with pytest.raises(NotFoundException) as assert_error:
             self.use_case.execute(input_param)
-        assert assert_error.value.args[0] == f"Category with id {
-            input_param.id} not found"
+        assert assert_error.value.args[0] == f"Category with id {input_param.id} not found"
 
     def test_execute(self):
         category = Category.fake().a_category().build()

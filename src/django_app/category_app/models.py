@@ -95,8 +95,7 @@ class CategoryDjangoRepository(ICategoryRepository):
             query = query.filter(name__icontains=input_params.filter)
         if input_params.sort and input_params.sort in self.sortable_fields:
             query = query.order_by(
-                input_params.sort if input_params.sort_dir == SortDirection.ASC else f'-{
-                    input_params.sort}'
+                input_params.sort if input_params.sort_dir == SortDirection.ASC else f'-{input_params.sort}'
             )
         else:
             query = query.order_by('-created_at')

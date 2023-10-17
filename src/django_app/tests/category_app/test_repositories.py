@@ -98,8 +98,7 @@ class TestCategoryDjangoRepository:
         category = Category.fake().a_category().build()
         with pytest.raises(NotFoundException) as assert_error:
             self.repo.update(category)
-        assert assert_error.value.args[0] == f"Category with id {
-            category.category_id.id} not found"
+        assert assert_error.value.args[0] == f"Category with id {category.category_id.id} not found"
 
     def test_update(self):
         category = Category.fake().a_category().build()
@@ -123,8 +122,7 @@ class TestCategoryDjangoRepository:
         category_id = Uuid()
         with pytest.raises(NotFoundException) as assert_error:
             self.repo.delete(category_id)
-        assert assert_error.value.args[0] == f"Category with id {
-            category_id.id} not found"
+        assert assert_error.value.args[0] == f"Category with id {category_id.id} not found"
 
     def test_delete(self):
         category = Category.fake().a_category().build()
@@ -189,7 +187,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        1, 0 # type: ignore
+                        1, 0  # type: ignore
                     ],
                     total=5,
                     current_page=1,
@@ -205,7 +203,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        4, 2 # type: ignore
+                        4, 2  # type: ignore
                     ],
                     total=5,
                     current_page=2,
@@ -221,7 +219,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        3, 2 # type: ignore
+                        3, 2  # type: ignore
                     ],
                     total=5,
                     current_page=1,
@@ -238,7 +236,7 @@ class TestCategoryDjangoRepository:
                 ),
                 ICategoryRepository.SearchResult(
                     items=[
-                        4, 0 # type: ignore
+                        4, 0  # type: ignore
                     ],
                     total=5,
                     current_page=2,
@@ -262,7 +260,7 @@ class TestCategoryDjangoRepository:
         self.repo.bulk_insert(entities)
 
         search_result = self.repo.search(search_params)
-        expected_search_output.items = [entities[i] # type: ignore
+        expected_search_output.items = [entities[i]  # type: ignore
                                         for i in expected_search_output.items]
         assert search_result == expected_search_output
 

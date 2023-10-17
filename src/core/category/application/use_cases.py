@@ -1,13 +1,15 @@
 
 from dataclasses import MISSING, dataclass as python_dataclass
 from datetime import datetime
-from pydantic import Field, StrictBool
+from typing import Annotated
+from core.shared.domain.pydantic import StrNotEmpty
+from pydantic import BeforeValidator, Field, StrictBool
 from pydantic.dataclasses import dataclass as pydantic_dataclass
 from core.category.domain.entities import Category
 from core.category.domain.repositories import ICategoryRepository
 from uuid import UUID
 from core.shared.application.use_cases import PaginationOutput, SearchInput, UseCase
-from core.shared.domain.exceptions import NotFoundException
+from core.shared.domain.exceptions import EntityValidationException, NotFoundException
 from core.shared.domain.value_objects import Uuid
 
 
@@ -49,8 +51,8 @@ class CreateCategoryUseCase(UseCase):
 
     @pydantic_dataclass(slots=True, frozen=True)
     class Input:
-        name: str
-        description: str | None = None
+        name: Annotated[str, StrNotEmpty]
+        description: Annotated[str | None, StrNotEmpty] = None
         is_active: StrictBool = True
 
     @python_dataclass(slots=True, frozen=True)
@@ -134,6 +136,9 @@ class UpdateCategoryUseCase(UseCase):
 
         if input_param.is_active is False:
             entity.deactivate()
+        
+        if entity.notification.has_errors():
+            raise EntityValidationException(entity.notification.errors)
 
         self.category_repo.update(entity)
         return self.__to_output(entity)
@@ -144,8 +149,8 @@ class UpdateCategoryUseCase(UseCase):
     @pydantic_dataclass(slots=True, frozen=True)
     class Input:
         id: UUID  # accepts uuid string
-        name: str | None = None
-        description: str | None = Field(default=MISSING)  # type: ignore
+        name: Annotated[str | None, StrNotEmpty] = None
+        description: Annotated[str | None, StrNotEmpty] = Field(default=MISSING)  # type: ignore
         is_active: StrictBool | None = None
 
     @python_dataclass(slots=True, frozen=True)

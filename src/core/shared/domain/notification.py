@@ -4,9 +4,9 @@ from pydantic import ValidationError
 
 @dataclass(slots=True, kw_only=True)
 class Notification:
-    errors: List[ValidationError] = field(default_factory=list)
+    errors: List[ValidationError | str] = field(default_factory=list)
 
-    def add_error(self, error: ValidationError):
+    def add_error(self, error: ValidationError | str):
         self.errors.append(error)
 
     def has_errors(self):

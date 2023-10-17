@@ -24,14 +24,6 @@ class TestCategoryFakeBuilder:
 
     def test_invalid_cases_for_name_prop(self):
         faker = CategoryFakerBuilder.a_category()
-        this = faker.with_invalid_name_none()
-        assert isinstance(this, CategoryFakerBuilder)
-
-        name_value = this.name
-        assert name_value is None
-
-        name_value = faker.with_invalid_name_empty().name
-        assert name_value == ""
 
         name_value = faker.with_invalid_name_too_long().name
         assert len(name_value) == 256

@@ -9,16 +9,29 @@
     "python.analysis.typeCheckingMode": "strict",
     "python.analysis.ignore": [
         ".venv",
-        "/usr/local/lib/python3.12",
+        "/usr/local/lib/python3.11",
     ],
     "python.analysis.autoImportCompletions": true,
     "python.analysis.indexing": true,
     "python.analysis.packageIndexDepths": [
         {
+            "name": "core",
+            "includeAllSymbols": true,
+            "depth": 20
+        },
+        {
             "name": "django",
             "includeAllSymbols": true,
             "depth": 20
         },
+        {
+            "name": "rest_framework",
+            "includeAllSymbols": true,
+            "depth": 20
+        },
     ],
+    "python.analysis.extraPaths": [
+        ".venv/lib/python3.11/site-packages",
+    ]
     //"python.terminal.activateEnvironment": true
 }
