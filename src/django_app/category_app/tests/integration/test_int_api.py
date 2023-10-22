@@ -6,8 +6,8 @@ from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.exceptions import EntityValidationException, NotFoundException
 from core.shared.domain.value_objects import Uuid
 from django_app.category_app.api import CategoryController
-from django_app.tests.category_app.fixtures import CreateCategoryApiFixture, GetObjectCategoryApiFixture, ListCategoriesApiFixture, UpdateCategoryApiFixture
-from django_app.tests.shared.helpers import make_request
+from django_app.category_app.tests.fixtures import CreateCategoryApiFixture, GetObjectCategoryApiFixture, ListCategoriesApiFixture, UpdateCategoryApiFixture
+from django_app.shared.tests.helpers import make_request
 from pydantic import ValidationError
 import pytest
 from django_app.ioc_app.containers import container
