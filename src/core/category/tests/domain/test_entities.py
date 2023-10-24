@@ -13,9 +13,10 @@ class TestCategory:
         assert issubclass(Category, Entity)
 
     def test_should_be_slots(self):
-        #python 12
-        #assert Category.__dataclass_params__.slots is True  # pylint: disable=no-member # type: ignore
-        assert Category.__slots__ == ('category_id', 'name', 'description', 'is_active', 'created_at')
+        # python 12
+        # assert Category.__dataclass_params__.slots is True  # pylint: disable=no-member # type: ignore
+        assert Category.__slots__ == (
+            'category_id', 'name', 'description', 'is_active', 'created_at')
 
     # def test_should_be_kw_only(self):
     #     assert Category.__dataclass_params__.kw_only is True  # pylint: disable=no-member # type: ignore
@@ -46,9 +47,9 @@ class TestCategory:
         category.change_name(1)  # type: ignore
         assert category.notification.has_errors() is True
         assert len(category.notification.errors) == 1
-        assert isinstance(category.notification.errors[0], ValidationError)
-        assert category.notification.errors[0].errors(
-        )[0]['msg'] == 'Input should be a valid string'
+        assert category.notification.errors == {
+            'name': ['Input should be a valid string']
+        }
 
     def test_should_change_name(self):
         category = Category(category_id=Uuid(), name='Test Category')
@@ -67,9 +68,9 @@ class TestCategory:
         category.change_description(1)  # type: ignore
         assert category.notification.has_errors() is True
         assert len(category.notification.errors) == 1
-        assert isinstance(category.notification.errors[0], ValidationError)
-        assert category.notification.errors[0].errors(
-        )[0]['msg'] == 'Input should be a valid string'
+        assert category.notification.errors == {
+            'description': ['Input should be a valid string']
+        }
 
     def test_should_activate_category(self):
         category = Category(category_id=Uuid(),

@@ -188,7 +188,7 @@ class TestCategoryControllerGetMethodInt:
 
 
 @pytest.mark.django_db
-class TestCategoryControllerPutMethodInt:
+class TestCategoryControllerPatchMethodInt:
 
     controller: CategoryController
     repo: ICategoryRepository
@@ -223,26 +223,7 @@ class TestCategoryControllerPutMethodInt:
             http_method='patch', send_data=request_body)
         with pytest.raises(EntityValidationException) as assert_exception:
             self.controller.patch(request, category.category_id.id)
-        assert len(assert_exception.value.errors) == len(exception.errors)
-        # sourcery skip: no-loop-in-tests
-        for assert_error, expected_error in zip(assert_exception.value.errors, exception.errors):
-            assert type(assert_error) is type(expected_error)
-
-            # sourcery skip: no-conditionals-in-tests
-            if isinstance(expected_error, ValidationError):
-                assert len(assert_error.errors()) == len(  # type: ignore
-                    expected_error.errors())
-
-                for assert_error, expected_error in zip(
-                    assert_error.errors(),  # type: ignore
-                    expected_error.errors()
-                ):
-                    assert assert_error['type'] == expected_error['type']
-                    assert assert_error['msg'] == expected_error['msg']
-                    assert assert_error['loc'] == expected_error['loc']
-
-            if isinstance(expected_error, str):  # sourcery skip: no-conditionals-in-tests
-                assert assert_error == expected_error
+        assert assert_exception.value.errors == exception.errors
 
     def test_throw_exception_when_uuid_is_invalid(self):
         request = make_request(http_method='patch', send_data={})

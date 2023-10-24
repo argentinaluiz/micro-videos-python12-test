@@ -34,16 +34,13 @@ class Category(Entity):
         self.is_active = False
 
     def validate(self):
-        try:
-            self._validate({
+        self._validate({
                 'category_id': self.category_id,
                 'name': self.name,
                 'description': self.description,
                 'is_active': self.is_active,
                 'created_at': self.created_at
-            })
-        except ValidationError as e:
-            self.notification.add_error(e)
+        })
 
     @staticmethod
     def fake(): #type: ignore

@@ -29,4 +29,5 @@ class Entity(ABC):
         try:
             TypeAdapter(self.__class__).validate_python(data)
         except ValidationError as e:
-            self.notification.add_error(e)
+            for error in e.errors():
+                self.notification.add_error(error['msg'], str(error['loc'][0]))

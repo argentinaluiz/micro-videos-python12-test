@@ -36,9 +36,9 @@ class TestEntity:
         entity.validate()
         assert entity.notification.has_errors() is True
         assert len(entity.notification.errors) == 1
-        assert isinstance(entity.notification.errors[0], ValidationError)
-        assert entity.notification.errors[0].errors(
-        )[0]['msg'] == 'Input should be a valid string'
+        assert entity.notification.errors == {
+            'name': ['Input should be a valid string']
+        }
 
     def test_should_be_a_abc_subclass(self):
         assert issubclass(Entity, ABC)

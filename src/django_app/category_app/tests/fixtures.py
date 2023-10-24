@@ -308,18 +308,9 @@ class UpdateCategoryApiFixture:
                 request_body={
                     'name': 't' * 256
                 },
-                exception=EntityValidationException([
-                    ValidationError.from_exception_data(
-                        title='',
-                        line_errors=[
-                            InitErrorDetails(
-                                loc=('name',),
-                                type='string_too_long',
-                                input=None,
-                                ctx={'max_length': 255}
-                            )
-                        ]
-                    )])
+                exception=EntityValidationException({
+                    'name': ['String should have at most 255 characters']
+                })
             ),
         )
         return (pytest.param(item['request_body'], item['exception'], id=item['id']) for item in arrange)
@@ -327,9 +318,9 @@ class UpdateCategoryApiFixture:
     @staticmethod
     def arrange_for_update():
         faker = Category.fake()\
-        .a_category()\
-        .with_name('Movie')\
-        .with_description('description test')
+            .a_category()\
+            .with_name('Movie')\
+            .with_description('description test')
         arrange = (
             {
                 'request_body': {'name': faker.name},
@@ -397,12 +388,12 @@ class ListCategoriesApiFixture:
     @ staticmethod
     def arrange_incremented_with_created_at():
         categories = Category.fake()\
-        .the_categories(4)\
-        .with_created_at(
+            .the_categories(4)\
+            .with_created_at(
             lambda self, index: datetime.datetime.now(
                 datetime.timezone.utc) + datetime.timedelta(days=index)
         )\
-        .build()
+            .build()
 
         class CategoriesNamed(NamedTuple):
             first: Category

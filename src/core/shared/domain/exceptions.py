@@ -1,9 +1,6 @@
 from dataclasses import dataclass
 from os import error
-from typing import Any, List
-
-from pydantic import ValidationError
-
+from typing import Any, Dict, List
 
 class NotFoundException(Exception):
 
@@ -16,4 +13,4 @@ class NotFoundException(Exception):
 @dataclass(slots=True)
 class EntityValidationException(Exception):
 
-    errors: List[ValidationError | str]
+    errors: Dict[str, List[str] | str]

@@ -46,7 +46,7 @@ class CategoryController(APIView):
         return Response(data)
 
     def get_object(self, category_id: str):
-        input_param = GetCategoryUseCase.Input(category_id)  # type: ignore
+        input_param = GetCategoryUseCase.Input(id=category_id)  # type: ignore
         output = self.get_use_case().execute(input_param)
         body = CategoryController.serialize(output)
         return Response(body)
