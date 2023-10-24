@@ -1,5 +1,5 @@
 from typing import Any
-from django_app.shared.helpers import parse_complex_query_params
+from django_app.shared_app.helpers import parse_complex_query_params
 from rest_framework.request import Request as DrfRequest
 from rest_framework.test import APIRequestFactory
 from django.http.request import HttpRequest

@@ -110,7 +110,6 @@ class TestIntGetCategoryUseCase:
         input_param = GetCategoryUseCase.Input(_id)
         with pytest.raises(NotFoundException) as assert_error:
             self.use_case.execute(input_param)
-        print(vars(assert_error))
         assert str(assert_error.value) == str(NotFoundException(
             _id, Category.__name__
         ))

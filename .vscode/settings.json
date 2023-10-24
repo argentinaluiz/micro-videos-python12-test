@@ -28,10 +28,11 @@
             "name": "rest_framework",
             "includeAllSymbols": true,
             "depth": 20
-        },
+        }
     ],
     "python.analysis.extraPaths": [
         ".venv/lib/python3.11/site-packages",
-    ]
+    ],
+    "python.testing.autoTestDiscoverOnSaveEnabled": false,
     //"python.terminal.activateEnvironment": true
 }

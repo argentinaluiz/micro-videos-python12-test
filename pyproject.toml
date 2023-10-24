@@ -10,6 +10,9 @@ dependencies = [
     "django>=4.2.6",
     "djangorestframework>=3.14.0",
     "dependency-injector>=4.41.0",
+    "dj-database-url>=2.1.0",
+    "pydantic-settings>=2.0.3",
+    "mysqlclient>=2.2.0",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -26,4 +29,5 @@ dev = [
     "pylint>=3.0.1",
     "pytest-django>=4.5.2",
     "Faker>=19.6.2",
+    "colorama>=0.4.6",
 ]

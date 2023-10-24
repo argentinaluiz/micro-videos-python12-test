@@ -45,24 +45,27 @@ class TestCategoryDjangoRepository:
         assert model.created_at == category.created_at
 
     def test_bulk_insert(self):
-        categories = Category.fake().the_categories(2).build()
+        categories = Category.fake().the_categories(2)\
+            .with_created_at(lambda self, index: datetime.datetime.now(
+                datetime.timezone.utc) + datetime.timedelta(days=index))\
+            .build()
 
         self.repo.bulk_insert(categories)
 
         models = CategoryModel.objects.all()
 
         assert len(models) == 2
-        assert str(models[0].id) == categories[0].category_id.id
-        assert models[0].name == categories[0].name
-        assert models[0].description == categories[0].description
-        assert models[0].is_active == categories[0].is_active
-        assert models[0].created_at == categories[0].created_at
+        assert str(models[0].id) == categories[1].category_id.id
+        assert models[0].name == categories[1].name
+        assert models[0].description == categories[1].description
+        assert models[0].is_active == categories[1].is_active
+        assert models[0].created_at == categories[1].created_at
 
-        assert str(models[1].id) == categories[1].category_id.id
-        assert models[1].name == categories[1].name
-        assert models[1].description == categories[1].description
-        assert models[1].is_active == categories[1].is_active
-        assert models[1].created_at == categories[1].created_at
+        assert str(models[1].id) == categories[0].category_id.id
+        assert models[1].name == categories[0].name
+        assert models[1].description == categories[0].description
+        assert models[1].is_active == categories[0].is_active
+        assert models[1].created_at == categories[0].created_at
 
     def test_find_by_id(self):
 
@@ -77,22 +80,25 @@ class TestCategoryDjangoRepository:
         assert category_found == category
 
     def test_find_all(self):
-        categories = Category.fake().the_categories(2).build()
+        categories = Category.fake().the_categories(2)\
+            .with_created_at(lambda self, index: datetime.datetime.now(
+                datetime.timezone.utc) + datetime.timedelta(days=index))\
+            .build()
         self.repo.bulk_insert(categories)
         found_categories = self.repo.find_all()
 
         assert len(found_categories) == 2
-        assert found_categories[0].category_id == categories[0].category_id
-        assert found_categories[0].name == categories[0].name
-        assert found_categories[0].description == categories[0].description
-        assert found_categories[0].is_active == categories[0].is_active
-        assert found_categories[0].created_at == categories[0].created_at
+        assert found_categories[0].category_id == categories[1].category_id
+        assert found_categories[0].name == categories[1].name
+        assert found_categories[0].description == categories[1].description
+        assert found_categories[0].is_active == categories[1].is_active
+        assert found_categories[0].created_at == categories[1].created_at
 
-        assert found_categories[1].category_id == categories[1].category_id
-        assert found_categories[1].name == categories[1].name
-        assert found_categories[1].description == categories[1].description
-        assert found_categories[1].is_active == categories[1].is_active
-        assert found_categories[1].created_at == categories[1].created_at
+        assert found_categories[1].category_id == categories[0].category_id
+        assert found_categories[1].name == categories[0].name
+        assert found_categories[1].description == categories[0].description
+        assert found_categories[1].is_active == categories[0].is_active
+        assert found_categories[1].created_at == categories[0].created_at
 
     def test_throw_not_found_exception_in_update(self):
         category = Category.fake().a_category().build()
@@ -153,12 +159,12 @@ class TestCategoryDjangoRepository:
         created_at = datetime.datetime.now(datetime.timezone.utc)
         entities = [
             Category.fake().a_category().with_name(
-                'test').with_created_at(created_at).build(),
-            Category.fake().a_category().with_name('a').with_created_at(created_at).build(),
+                'test').with_created_at(created_at + datetime.timedelta(days=4)).build(),
+            Category.fake().a_category().with_name('a').with_created_at(created_at + datetime.timedelta(days=3)).build(),
             Category.fake().a_category().with_name(
-                'TEST').with_created_at(created_at).build(),
+                'TEST').with_created_at(created_at + datetime.timedelta(days=2)).build(),
             Category.fake().a_category().with_name(
-                'TeSt').with_created_at(created_at).build(),
+                'TeSt').with_created_at(created_at + datetime.timedelta(days=1)).build(),
         ]
         self.repo.bulk_insert(entities)
         search_params = ICategoryRepository.SearchParams(

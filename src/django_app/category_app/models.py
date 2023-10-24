@@ -7,6 +7,8 @@ from core.shared.domain.exceptions import NotFoundException
 from core.shared.domain.search_params import SortDirection
 
 from core.shared.domain.value_objects import Uuid
+from django.db import connection
+from django.db.models.expressions import RawSQL
 
 
 class CategoryModel(models.Model):
@@ -18,6 +20,7 @@ class CategoryModel(models.Model):
 
     class Meta:  # type: ignore
         db_table = 'categories'
+        ordering = ['-created_at']
 
 
 class CategoryModelMapper:
@@ -94,12 +97,18 @@ class CategoryDjangoRepository(ICategoryRepository):
         if input_params.filter:
             query = query.filter(name__icontains=input_params.filter)
         if input_params.sort and input_params.sort in self.sortable_fields:
-            query = query.order_by(
-                input_params.sort if input_params.sort_dir == SortDirection.ASC else f'-{input_params.sort}'
-            )
+            if connection.settings_dict['ENGINE'] == 'django.db.backends.mysql':
+                raw_order = RawSQL(f'binary {input_params.sort}',[])
+                query = query.order_by(
+                    raw_order.asc() if input_params.sort_dir == SortDirection.ASC else raw_order.desc()
+                )
+            else:
+                query = query.order_by(
+                    input_params.sort if input_params.sort_dir == SortDirection.ASC else f'-{input_params.sort}'
+                )
+
         else:
             query = query.order_by('-created_at')
-
         paginator = Paginator(query, input_params.per_page)
         page_obj = paginator.page(input_params.page)
 

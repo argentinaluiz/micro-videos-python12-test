@@ -1,28 +1,19 @@
 from typing import Callable
 from dataclasses import dataclass
-from django_app.category_app.serializers import CategoryCollectionPresenter, CategoryPresenter
-from rest_framework.views import APIView  # type: ignore
-from rest_framework.response import Response  # type: ignore
-from rest_framework.request import Request as DrfRequest  # type: ignore
-from rest_framework import status as http  # type: ignore
+from django_app.category_app.presenters import CategoryCollectionPresenter, CategoryPresenter
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.request import Request as DrfRequest
+from rest_framework import status as http
 
-from core.category.application.use_cases import CategoryOutput, CreateCategoryUseCase, DeleteCategoryUseCase, GetCategoryUseCase, ListCategoriesUseCase, UpdateCategoryUseCase  # type: ignore
-# from core.category.application.use_cases import (
-#     CreateCategoryUseCase,
-#     ListCategoriesUseCase,
-#     GetCategoryUseCase,
-#     UpdateCategoryUseCase,
-#     DeleteCategoryUseCase
-# )
-# from core.category.infra.category_django_app.serializers import (
-#     CategoryCollectionSerializer,
-#     CategorySerializer
-# )
-# from core.category.application.dto import CategoryOutput
-# from core.__seedwork.infra.django_app.serializers import UUIDSerializer
-# # testes end to end - funcionamento
-# # testes integração -
-# # testes unitários controllers -
+from core.category.application.use_cases import (
+    CategoryOutput,
+    CreateCategoryUseCase,
+    DeleteCategoryUseCase,
+    GetCategoryUseCase,
+    ListCategoriesUseCase,
+    UpdateCategoryUseCase
+)
 
 
 @dataclass(slots=True)
@@ -39,6 +30,7 @@ class CategoryController(APIView):
         input_param = CreateCategoryUseCase.Input(
             **request.data)  # type: ignore
         output = self.create_use_case().execute(input_param)
+        print(output)
         body = CategoryController.serialize(output)
         return Response(body, status=http.HTTP_201_CREATED)
 
@@ -47,14 +39,14 @@ class CategoryController(APIView):
             return self.get_object(category_id)
 
         input_param = ListCategoriesUseCase.Input(
-            **request.query_params.dict() #type: ignore
+            **request.query_params.dict()  # type: ignore
         )
         output = self.list_use_case().execute(input_param)
         data = CategoryCollectionPresenter(output=output).serialize()
         return Response(data)
 
-    def get_object(self, category_id: str): 
-        input_param = GetCategoryUseCase.Input(category_id) #type: ignore
+    def get_object(self, category_id: str):
+        input_param = GetCategoryUseCase.Input(category_id)  # type: ignore
         output = self.get_use_case().execute(input_param)
         body = CategoryController.serialize(output)
         return Response(body)
@@ -62,14 +54,15 @@ class CategoryController(APIView):
     def patch(self, request: DrfRequest, category_id: str):
         input_param = UpdateCategoryUseCase.Input(
             id=category_id,
-            **request.data #type: ignore
+            **request.data  # type: ignore
         )
         output = self.update_use_case().execute(input_param)
         body = CategoryController.serialize(output)
         return Response(body)
 
-    def delete(self, _request: DrfRequest, category_id: str): 
-        input_param = DeleteCategoryUseCase.Input(id=category_id) #type: ignore
+    def delete(self, _request: DrfRequest, category_id: str):
+        input_param = DeleteCategoryUseCase.Input(
+            id=category_id)  # type: ignore
         self.delete_use_case().execute(input_param)
         return Response(status=http.HTTP_204_NO_CONTENT)
 

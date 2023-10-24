@@ -7,3 +7,15 @@ services:
       - "8000:8000"
     volumes:
       - .:/home/python/app
+  
+  db:
+    image: mysql:8.0.30-debian
+    environment:
+      - MYSQL_DATABASE=micro_videos
+      - MYSQL_ROOT_PASSWORD=root
+    # volumes:
+    #   - ./.docker/mysql:/docker-entrypoint-initdb.d
+    tmpfs:
+      - /var/lib/mysql
+    security_opt:
+      - seccomp:unconfined
