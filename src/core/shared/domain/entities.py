@@ -31,3 +31,8 @@ class Entity(ABC):
         except ValidationError as e:
             for error in e.errors():
                 self.notification.add_error(error['msg'], str(error['loc'][0]))
+
+
+@dataclass(slots=True)
+class AggregateRoot(Entity):
+    pass

@@ -3,13 +3,13 @@ from typing import Annotated, Any, Dict, List
 from pydantic import Strict, StrictBool, ValidationError
 import pytest
 from core.category.domain.entities import Category, CategoryId
-from core.shared.domain.entities import Entity
+from core.shared.domain.entities import AggregateRoot
 
 
 class TestCategory:
 
-    def test_should_be_a_entity_subclass(self):
-        assert issubclass(Category, Entity)
+    def test_should_be_a_aggregate_root_subclass(self):
+        assert issubclass(Category, AggregateRoot)
 
     def test_should_be_slots(self):
         # python 12

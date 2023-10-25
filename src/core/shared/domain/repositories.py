@@ -3,13 +3,13 @@
 import abc
 from dataclasses import dataclass, field
 from typing import Any, Generic, List, Type, TypeVar
-from core.shared.domain.entities import Entity
+from core.shared.domain.entities import AggregateRoot
 from core.shared.domain.exceptions import NotFoundException
 from core.shared.domain.search_params import Filter, SearchParams, SearchResult, SortDirection
 from core.shared.domain.value_objects import ValueObject
 
 
-ET = TypeVar('ET', bound=Entity)
+ET = TypeVar('ET', bound=AggregateRoot)
 EntityId = TypeVar('EntityId', bound=ValueObject)
 
 
