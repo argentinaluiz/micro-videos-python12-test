@@ -1,16 +1,15 @@
 from typing import List, Type
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.repositories import InMemorySearchableRepository
 from core.shared.domain.search_params import SortDirection
-from core.shared.domain.value_objects import Uuid
 
 
 class CategoryInMemoryRepository(
         ICategoryRepository,
         InMemorySearchableRepository[
             Category,
-            Uuid, str
+            CategoryId, str
         ]):
     sortable_fields: List[str] = ["name", "created_at"]
 

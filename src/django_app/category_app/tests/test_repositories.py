@@ -1,9 +1,8 @@
 import datetime
 import pytest
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.exceptions import NotFoundException
-from core.shared.domain.value_objects import Uuid
 from django_app.category_app.models import CategoryDjangoRepository, CategoryModel
 
 
@@ -69,7 +68,7 @@ class TestCategoryDjangoRepository:
 
     def test_find_by_id(self):
 
-        assert self.repo.find_by_id(Uuid()) is None
+        assert self.repo.find_by_id(CategoryId()) is None
 
         category = Category(
             name='Movie',
@@ -125,7 +124,7 @@ class TestCategoryDjangoRepository:
         assert model.created_at == category.created_at
 
     def test_throw_not_found_exception_in_delete(self):
-        category_id = Uuid()
+        category_id = CategoryId()
         with pytest.raises(NotFoundException) as assert_error:
             self.repo.delete(category_id)
         assert assert_error.value.args[0] == f"Category with id {category_id.id} not found"

@@ -4,10 +4,9 @@ from uuid import uuid4
 import pytest
 
 from core.category.application.use_cases import CreateCategoryUseCase, DeleteCategoryUseCase, GetCategoryUseCase, ListCategoriesUseCase, UpdateCategoryUseCase
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.exceptions import EntityValidationException, NotFoundException
-from core.shared.domain.value_objects import Uuid
 from django_app.category_app.models import CategoryDjangoRepository
 from _pytest.fixtures import SubRequest
 
@@ -25,7 +24,7 @@ class TestIntCreateCategoryUse:
     def test_execute(self):
         input_param = CreateCategoryUseCase.Input(name='Movie1')
         output = self.use_case.execute(input_param)
-        entity = cast(Category, self.repo.find_by_id(Uuid(output.id)))
+        entity = cast(Category, self.repo.find_by_id(CategoryId(output.id)))
 
         assert output == CreateCategoryUseCase.Output(
             id=entity.category_id.id,
@@ -43,7 +42,7 @@ class TestIntCreateCategoryUse:
             description='some description'
         )
         output = self.use_case.execute(input_param)
-        entity = cast(Category, self.repo.find_by_id(Uuid(output.id)))
+        entity = cast(Category, self.repo.find_by_id(CategoryId(output.id)))
 
         assert output == CreateCategoryUseCase.Output(
             id=entity.category_id.id,
@@ -62,7 +61,7 @@ class TestIntCreateCategoryUse:
             is_active=True
         )
         output = self.use_case.execute(input_param)
-        entity = cast(Category, self.repo.find_by_id(Uuid(output.id)))
+        entity = cast(Category, self.repo.find_by_id(CategoryId(output.id)))
 
         assert output == CreateCategoryUseCase.Output(
             id=entity.category_id.id,
@@ -81,7 +80,7 @@ class TestIntCreateCategoryUse:
             is_active=False
         )
         output = self.use_case.execute(input_param)
-        entity = cast(Category, self.repo.find_by_id(Uuid(output.id)))
+        entity = cast(Category, self.repo.find_by_id(CategoryId(output.id)))
 
         assert output == CreateCategoryUseCase.Output(
             id=entity.category_id.id,

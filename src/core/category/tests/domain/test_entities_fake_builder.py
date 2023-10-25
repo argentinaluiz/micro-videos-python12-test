@@ -1,9 +1,8 @@
 
 from datetime import datetime
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 
 from core.category.domain.entities_fake_builder import CategoryFakerBuilder
-from core.shared.domain.value_objects import Uuid
 import pytest
 
 class TestCategoryFakeBuilder:
@@ -16,7 +15,7 @@ class TestCategoryFakeBuilder:
 
     def test_category_id_prop(self):
         faker = CategoryFakerBuilder.a_category()
-        category_id = Uuid()
+        category_id = CategoryId()
         this = faker.with_category_id(category_id)
 
         assert isinstance(this, CategoryFakerBuilder)
@@ -76,7 +75,7 @@ class TestCategoryFakeBuilder:
 
         self.assert_props_types(category)
 
-        category_id = Uuid()
+        category_id = CategoryId()
         date = datetime.now()
         builder = faker.with_category_id(category_id)\
             .with_name('name test')\
@@ -102,7 +101,7 @@ class TestCategoryFakeBuilder:
         for category in categories: # sourcery skip: no-loop-in-tests
             self.assert_props_types(category)
 
-        category_id = Uuid()
+        category_id = CategoryId()
         date = datetime.now()
         # pylint: disable=no-member
         builder = faker.with_category_id(category_id)\
@@ -122,13 +121,13 @@ class TestCategoryFakeBuilder:
 
     def assert_props_types(self, category: Category):
         assert category is not None
-        assert isinstance(category.category_id, Uuid)
+        assert isinstance(category.category_id, CategoryId)
         assert isinstance(category.name, str)
         assert isinstance(category.description, str)
         assert isinstance(category.is_active, bool)
         assert isinstance(category.created_at, datetime)
 
-    def assert_category(self, category: Category, category_id: Uuid, created_at: datetime):
+    def assert_category(self, category: Category, category_id: CategoryId, created_at: datetime):
         assert category.category_id == category_id
         assert category.name == 'name test'
         assert category.description == 'description test'

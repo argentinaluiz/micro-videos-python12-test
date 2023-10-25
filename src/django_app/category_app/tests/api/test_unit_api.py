@@ -4,7 +4,7 @@ import datetime
 from unittest import mock
 from uuid import UUID
 from core.category.application.use_cases import CategoryOutput, CreateCategoryUseCase, DeleteCategoryUseCase, GetCategoryUseCase, ListCategoriesUseCase, UpdateCategoryUseCase
-from core.shared.domain.value_objects import Uuid
+from core.category.domain.entities import CategoryId
 from django_app.category_app.api import CategoryController
 from django_app.category_app.tests.api.helpers import init_category_resource_all_none
 from django_app.shared_app.tests.helpers import make_request
@@ -102,7 +102,7 @@ class TestCategoryControllerUnit:
             'get_use_case': lambda: mock_get_use_case  # type: ignore
         })
 
-        _id = Uuid().id
+        _id = CategoryId().id
 
         response = controller.get_object(_id)
 
@@ -199,7 +199,7 @@ class TestCategoryControllerUnit:
             'update_use_case': lambda: mock_update_use_case  # type: ignore
         })
 
-        _id = Uuid().id
+        _id = CategoryId().id
 
         request = make_request('patch', send_data={
             'name': 'test',
@@ -229,7 +229,7 @@ class TestCategoryControllerUnit:
             'delete_use_case': lambda: mock_delete_use_case  # type: ignore
         })
 
-        _id = Uuid().id
+        _id = CategoryId().id
 
         request = make_request('delete')
 

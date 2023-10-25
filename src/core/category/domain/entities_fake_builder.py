@@ -3,8 +3,7 @@ from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Any, Callable, Generic, List, TypeVar
 from faker import Faker
-from core.shared.domain.value_objects import Uuid
-from .entities import Category
+from .entities import Category, CategoryId
 
 T = TypeVar('T')
 
@@ -15,7 +14,7 @@ PropOrFactory = T | Callable[['CategoryFakerBuilder[Any]', int], T]
 class CategoryFakerBuilder(Generic[T]):
     count_objs: int = 1
 
-    __category_id: PropOrFactory[Uuid | None] = field(
+    __category_id: PropOrFactory[CategoryId | None] = field(
         default=None, init=False
     )
     __name: PropOrFactory[str] = field(
@@ -37,7 +36,7 @@ class CategoryFakerBuilder(Generic[T]):
     def the_categories(cls, count: int) -> 'CategoryFakerBuilder[List[Category]]':
         return cls(count)
 
-    def with_category_id(self, value: PropOrFactory[Uuid]):
+    def with_category_id(self, value: PropOrFactory[CategoryId]):
         self.__category_id = value
         return self
 
@@ -87,7 +86,7 @@ class CategoryFakerBuilder(Generic[T]):
         return categories if self.count_objs > 1 else categories[0]
 
     @property
-    def category_id(self) -> Uuid:
+    def category_id(self) -> CategoryId:
         value = self.__call_factory(self.__category_id, 0)
         if value is None:
             raise ValueError(

@@ -5,12 +5,11 @@ from typing import Annotated
 from core.shared.domain.pydantic import StrNotEmpty
 from pydantic import BeforeValidator, Field, StrictBool
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from uuid import UUID
 from core.shared.application.use_cases import PaginationOutput, SearchInput, UseCase
 from core.shared.domain.exceptions import EntityValidationException, NotFoundException
-from core.shared.domain.value_objects import Uuid
 
 
 @python_dataclass(frozen=True, slots=True)
@@ -66,7 +65,7 @@ class GetCategoryUseCase(UseCase):
     category_repo: ICategoryRepository
 
     def execute(self, input_param: 'Input') -> 'Output':
-        category_id = Uuid(str(input_param.id))
+        category_id = CategoryId(str(input_param.id))
         if category := self.category_repo.find_by_id(category_id):
             return self.__to_output(category)
         else:
@@ -119,7 +118,7 @@ class UpdateCategoryUseCase(UseCase):
     category_repo: ICategoryRepository
 
     def execute(self, input_param: 'Input') -> 'Output':
-        category_id = Uuid(str(input_param.id))
+        category_id = CategoryId(str(input_param.id))
         entity = self.category_repo.find_by_id(category_id)
 
         if entity is None:
@@ -164,7 +163,7 @@ class DeleteCategoryUseCase(UseCase):
     category_repo: ICategoryRepository
 
     def execute(self, input_param: 'Input') -> None:
-        category_id = Uuid(str(input_param.id))
+        category_id = CategoryId(str(input_param.id))
         self.category_repo.delete(category_id)
 
     @pydantic_dataclass(slots=True, frozen=True)

@@ -6,9 +6,12 @@ from typing_extensions import Annotated
 from core.shared.domain.entities import Entity
 from core.shared.domain.value_objects import Uuid
 
+class CategoryId(Uuid):
+    pass
+
 @dataclass(slots=True, kw_only=True)
 class Category(Entity):
-    category_id: Uuid = field(default_factory=Uuid)
+    category_id: CategoryId = field(default_factory=CategoryId)
     name: str = Field(max_length=255)
     description: str | None = None
     is_active: StrictBool = True

@@ -1,10 +1,9 @@
 from typing import Any, Dict, List
 from urllib.parse import urlencode
 from core.category.application.use_cases import CategoryOutput
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.exceptions import EntityValidationException, NotFoundException
-from core.shared.domain.value_objects import Uuid
 from django_app.category_app.api import CategoryController
 from .helpers import init_category_resource_all_none
 from django_app.category_app.tests.fixtures import CreateCategoryApiFixture, GetObjectCategoryApiFixture, ListCategoriesApiFixture, UpdateCategoryApiFixture
@@ -65,7 +64,7 @@ class TestCategoryControllerPostMethodInt:
             response_data['data'].keys())
 
         data = response_data['data']
-        category_created = self.repo.find_by_id(Uuid(data['id']))
+        category_created = self.repo.find_by_id(CategoryId(data['id']))
         assert category_created is not None
         output = CategoryOutput.from_entity(category_created)
         serialized = CategoryController.serialize(output)
@@ -254,7 +253,7 @@ class TestCategoryControllerPatchMethodInt:
             response_data['data'].keys())
 
         data = response_data['data']
-        category_updated = self.repo.find_by_id(Uuid(data['id']))
+        category_updated = self.repo.find_by_id(CategoryId(data['id']))
         assert category_updated is not None
         output = CategoryOutput.from_entity(category_updated)
         serialized = CategoryController.serialize(output)

@@ -1,9 +1,8 @@
 from urllib.parse import urlencode
 from core.category.application.use_cases import CategoryOutput
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.category.domain.repositories import ICategoryRepository
 from core.shared.domain.exceptions import EntityValidationException
-from core.shared.domain.value_objects import Uuid
 from django_app.category_app.api import CategoryController
 from django_app.category_app.tests.fixtures import CreateCategoryApiFixture, ListCategoriesApiFixture, UpdateCategoryApiFixture
 import pytest
@@ -52,7 +51,7 @@ class TestCategoriesPostE2E:
         data = response.data['data']  # type: ignore
         assert CreateCategoryApiFixture.keys_in_response() == list(data.keys())
         category_created = self.category_repository.find_by_id(
-            Uuid(data['id']))
+            CategoryId(data['id']))
         output = CategoryOutput.from_entity(category_created)  # type: ignore
         serialized = CategoryController.serialize(output)
         assert response.content == JSONRenderer().render(serialized)  # type: ignore
@@ -101,8 +100,7 @@ class TestCategoriesGetObjectE2E:
         for item in arrange:
             response = self.client_http.get(
                 f'/categories/{item["id"]}/', format='json')
-            # type: ignore
-            assert response.status_code == item['expected']['status_code']
+            assert response.status_code == item['expected']['status_code'] # type: ignore
             assert response.content == JSONRenderer().render(  # type: ignore
                 item['expected']['content'])
 
@@ -207,19 +205,19 @@ class TestCategoriesPatchE2E:
         self.category_repository.insert(entity)
         response = self.client_http.patch(
             f'/categories/{entity.category_id.id}/', data=request_body, format='json')
-        assert response.status_code == 200
-        assert 'data' in response.data
-        data = response.data['data']
+        assert response.status_code == 200 # type: ignore
+        assert 'data' in response.data # type: ignore
+        data = response.data['data'] # type: ignore
         assert UpdateCategoryApiFixture.keys_in_response() == list(data.keys())
-        category_updated = self.category_repository.find_by_id(Uuid(data['id']))
-        output = CategoryOutput.from_entity(category_updated)
+        category_updated = self.category_repository.find_by_id(CategoryId(data['id']))
+        output = CategoryOutput.from_entity(category_updated) # type: ignore
         serialized = CategoryController.serialize(output)
-        assert response.content == JSONRenderer().render(serialized)
-        assert response.data == {
+        assert response.content == JSONRenderer().render(serialized) # type: ignore
+        assert response.data == { # type: ignore
             'data': {
-                'name': response_body.get('name', category_updated.name),
-                'description': response_body.get('description', category_updated.description),
-                'is_active': response_body.get('is_active', category_updated.is_active),
+                'name': response_body.get('name', category_updated.name), # type: ignore
+                'description': response_body.get('description', category_updated.description), # type: ignore
+                'is_active': response_body.get('is_active', category_updated.is_active), # type: ignore
                 'id': entity.category_id.id,
                 'created_at': serialized['data']['created_at'],
             }
@@ -263,7 +261,7 @@ class TestCategoriesDeleteE2E:
             response = self.client_http.delete(
                 f'/categories/{item["id"]}/', format='json')
             # type: ignore
-            assert response.status_code == item['expected']['status_code']
+            assert response.status_code == item['expected']['status_code'] # type: ignore
             assert response.content == JSONRenderer().render(  # type: ignore
                 item['expected']['content'])
 

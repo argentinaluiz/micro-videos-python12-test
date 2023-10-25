@@ -1,12 +1,11 @@
 from typing import List, Type
 from core.category.domain.repositories import ICategoryRepository
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from django.core.paginator import Paginator
 from django.db import models
 from core.shared.domain.exceptions import NotFoundException
 from core.shared.domain.search_params import SortDirection
 
-from core.shared.domain.value_objects import Uuid
 from django.db import connection
 from django.db.models.expressions import RawSQL
 
@@ -28,7 +27,7 @@ class CategoryModelMapper:
     @staticmethod
     def to_entity(model: 'CategoryModel') -> Category:
         return Category(
-            category_id=Uuid(str(model.id)),
+            category_id=CategoryId(str(model.id)),
             name=model.name,
             description=model.description,
             is_active=model.is_active,
@@ -63,7 +62,7 @@ class CategoryDjangoRepository(ICategoryRepository):
             )
         )
 
-    def find_by_id(self, entity_id: Uuid) -> Category | None:
+    def find_by_id(self, entity_id: CategoryId) -> Category | None:
         model = self._get(entity_id)
         return CategoryModelMapper.to_entity(model) if model else None
 
@@ -81,14 +80,14 @@ class CategoryDjangoRepository(ICategoryRepository):
             raise NotFoundException(
                 entity.category_id.id, self.get_entity().__name__)
 
-    def delete(self, entity_id: Uuid) -> None:
+    def delete(self, entity_id: CategoryId) -> None:
         model = self._get(entity_id)
         if not model:
             raise NotFoundException(
                 entity_id.id, self.get_entity().__name__)
         model.delete()
 
-    def _get(self, entity_id: Uuid) -> CategoryModel | None:
+    def _get(self, entity_id: CategoryId) -> CategoryModel | None:
         return CategoryModel.objects.filter(pk=entity_id.id).first()
 
     def search(self, input_params: ICategoryRepository.SearchParams) -> ICategoryRepository.SearchResult:

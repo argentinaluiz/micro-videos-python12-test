@@ -4,7 +4,7 @@ from unittest import TestCase, mock
 from core.shared.domain.repositories import InMemoryRepository, InMemorySearchableRepository
 from core.shared.domain.entities import Entity
 from core.shared.domain.search_params import SearchParams, SearchResult, SortDirection
-from core.shared.domain.value_objects import Uuid, ValueObject
+from core.shared.domain.value_objects import Uuid
 import pytest
 
 

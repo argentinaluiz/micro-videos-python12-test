@@ -2,9 +2,8 @@ from datetime import datetime
 from typing import Annotated, Any, Dict, List
 from pydantic import Strict, StrictBool, ValidationError
 import pytest
-from core.category.domain.entities import Category
+from core.category.domain.entities import Category, CategoryId
 from core.shared.domain.entities import Entity
-from core.shared.domain.value_objects import Uuid
 
 
 class TestCategory:
@@ -24,7 +23,7 @@ class TestCategory:
     def test_should_generate_a_new_id(self):
         category = Category(name='Test Category')
         assert category.category_id is not None
-        assert isinstance(category.category_id, Uuid)
+        assert isinstance(category.category_id, CategoryId)
 
     def test_should_generate_a_new_created_at(self):
         category = Category(name='Test Category')
@@ -32,18 +31,18 @@ class TestCategory:
         assert isinstance(category.created_at, datetime)
 
     def test_should_be_equal_to_another_category_with_the_same_id(self):
-        category_id = Uuid()
+        category_id = CategoryId()
         category1 = Category(category_id=category_id, name='Test Category 1')
         category2 = Category(category_id=category_id, name='Test Category 1')
         assert category1.equals(category2)
 
     def test_should_not_be_equal_to_another_category_with_a_different_id(self):
-        category1 = Category(category_id=Uuid(), name='Test Category')
-        category2 = Category(category_id=Uuid(), name='Test Category')
+        category1 = Category(category_id=CategoryId(), name='Test Category')
+        category2 = Category(category_id=CategoryId(), name='Test Category')
         assert category1 != category2
 
     def test_should_generate_an_error_in_change_name(self):
-        category = Category(category_id=Uuid(), name='Test Category')
+        category = Category(category_id=CategoryId(), name='Test Category')
         category.change_name(1)  # type: ignore
         assert category.notification.has_errors() is True
         assert len(category.notification.errors) == 1
@@ -52,19 +51,19 @@ class TestCategory:
         }
 
     def test_should_change_name(self):
-        category = Category(category_id=Uuid(), name='Test Category')
+        category = Category(category_id=CategoryId(), name='Test Category')
         new_name = 'New Test Category'
         category.change_name(new_name)
         assert category.name == new_name
 
     def test_should_change_description(self):
-        category = Category(category_id=Uuid(), name='Test Category')
+        category = Category(category_id=CategoryId(), name='Test Category')
         new_description = 'New Test Description'
         category.change_description(new_description)
         assert category.description == new_description
 
     def test_should_generate_an_error_in_change_description(self):
-        category = Category(category_id=Uuid(), name='Test Category')
+        category = Category(category_id=CategoryId(), name='Test Category')
         category.change_description(1)  # type: ignore
         assert category.notification.has_errors() is True
         assert len(category.notification.errors) == 1
@@ -73,20 +72,20 @@ class TestCategory:
         }
 
     def test_should_activate_category(self):
-        category = Category(category_id=Uuid(),
+        category = Category(category_id=CategoryId(),
                             name='Test Category', is_active=False)
         category.activate()
         assert category.is_active is True
 
     def test_should_deactivate_category(self):
-        category = Category(category_id=Uuid(),
+        category = Category(category_id=CategoryId(),
                             name='Test Category', is_active=True)
         category.deactivate()
         assert category.is_active is False
 
     def test_fields_mapping(self):
         assert Category.__annotations__ == {
-            'category_id': Uuid,
+            'category_id': CategoryId,
             'name': str,
             'description': str | None,
             'is_active': StrictBool,
