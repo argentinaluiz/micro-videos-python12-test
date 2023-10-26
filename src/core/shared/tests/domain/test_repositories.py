@@ -102,6 +102,9 @@ class StubInMemorySearchableRepository(InMemorySearchableRepository[StubEntity, 
     def get_entity(self):
         return StubEntity
 
+class StubSearchParams(SearchParams[str]):
+    pass
+
 
 class TestInMemorySearchableRepository:
 
@@ -171,7 +174,7 @@ class TestInMemorySearchableRepository:
         items = [entity] * 16
         self.repository.bulk_insert(items)
 
-        result = self.repository.search(SearchParams())
+        result = self.repository.search(StubSearchParams())
         assert result == SearchResult(
             items=[entity] * 15,
             total=16,
@@ -188,7 +191,7 @@ class TestInMemorySearchableRepository:
         ]
         self.repository.bulk_insert(items)
 
-        result = self.repository.search(SearchParams(
+        result = self.repository.search(StubSearchParams(
             init_page=1, init_per_page=2, init_filter='TEST'
         ))
         assert result == SearchResult(
@@ -198,7 +201,7 @@ class TestInMemorySearchableRepository:
             per_page=2,
         )
 
-        result = self.repository.search(SearchParams(
+        result = self.repository.search(StubSearchParams(
             init_page=2, init_per_page=2, init_filter='TEST'
         ))
         assert result == SearchResult(
@@ -208,7 +211,7 @@ class TestInMemorySearchableRepository:
             per_page=2,
         )
 
-        result = self.repository.search(SearchParams(
+        result = self.repository.search(StubSearchParams(
             init_page=3, init_per_page=2, init_filter='TEST'
         ))
         assert result == SearchResult[Any](
@@ -220,7 +223,7 @@ class TestInMemorySearchableRepository:
 
     @pytest.mark.parametrize('search_params, expected_search_output', [
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=1, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -232,7 +235,7 @@ class TestInMemorySearchableRepository:
             id='asc page 1'
         ),
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=2, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -244,7 +247,7 @@ class TestInMemorySearchableRepository:
             id='asc page 2'
         ),
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=3, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -256,7 +259,7 @@ class TestInMemorySearchableRepository:
             id='asc page 3'
         ),
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=1, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -268,7 +271,7 @@ class TestInMemorySearchableRepository:
             id='desc page 1'
         ),
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=2, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -280,7 +283,7 @@ class TestInMemorySearchableRepository:
             id='desc page 2'
         ),
         pytest.param(
-            SearchParams(
+            StubSearchParams(
                 init_page=3, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -293,7 +296,7 @@ class TestInMemorySearchableRepository:
         ),
     ])
     def test_search_applying_sort_and_paginate(self,
-                                               search_params: SearchParams[str],
+                                               search_params: StubSearchParams,
                                                expected_search_output: SearchResult[StubEntity]):
         items = [
             StubEntity(Uuid(), 'b'),
@@ -319,7 +322,7 @@ class TestInMemorySearchableRepository:
         ]
         self.repository.bulk_insert(items)
 
-        result = self.repository.search(SearchParams(
+        result = self.repository.search(StubSearchParams(
             init_page=1, init_per_page=2, init_sort='name', init_filter='TEST'
         ))
         assert result == SearchResult[StubEntity](
@@ -329,7 +332,7 @@ class TestInMemorySearchableRepository:
             per_page=2,
         )
 
-        result = self.repository.search(SearchParams(
+        result = self.repository.search(StubSearchParams(
             init_page=2, init_per_page=2, init_sort='name', init_filter='TEST'
         ))
         assert result == SearchResult[StubEntity](
