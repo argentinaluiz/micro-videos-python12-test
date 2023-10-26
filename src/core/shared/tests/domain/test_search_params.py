@@ -12,6 +12,9 @@ from core.shared.domain.search_params import (
 from typing import List, Optional, Any
 
 
+class StubSearchParams(SearchParams[str]):
+    pass
+
 class TestSearchParams:
 
     def test_props_annotations(self):
@@ -44,7 +47,7 @@ class TestSearchParams:
             InitVar[Filter | None])  # type: ignore
 
     def test_default_values(self):
-        params = SearchParams()  # type: ignore
+        params = StubSearchParams()  # type: ignore
         assert params.page == 1
         assert params.per_page == 15
         assert params.sort is None
@@ -67,7 +70,7 @@ class TestSearchParams:
         pytest.param(2, 2, id='int'),
     ])
     def test_page_prop(self, page: Any, expected: int):
-        params = SearchParams(init_page=page)  # type: ignore
+        params = StubSearchParams(init_page=page)  # type: ignore
         assert params.page == expected
 
     @pytest.mark.parametrize('per_page, expected', [
@@ -86,7 +89,7 @@ class TestSearchParams:
         pytest.param(2, 2, id='int'),
     ])
     def test_per_page_prop(self, per_page: Any, expected: int):
-        params = SearchParams(init_per_page=per_page)  # type: ignore
+        params = StubSearchParams(init_per_page=per_page)  # type: ignore
         assert params.per_page == expected
 
     @pytest.mark.parametrize('sort, expected', [
@@ -103,7 +106,7 @@ class TestSearchParams:
         pytest.param({}, '{}', id='dict'),
     ])
     def test_sort_prop(self, sort: Any, expected: str | None):
-        params = SearchParams(init_sort=sort)  # type: ignore
+        params = StubSearchParams(init_sort=sort)  # type: ignore
         assert params.sort == expected
 
     @pytest.mark.parametrize('sort_dir, expected', [
@@ -118,25 +121,25 @@ class TestSearchParams:
         pytest.param('DESC', SortDirection.DESC, id='DESC'),
     ])
     def test_sort_dir_prop(self, sort_dir: Any, expected: str | None):
-        params = SearchParams(  # type: ignore
+        params = StubSearchParams(  # type: ignore
             init_sort='name', init_sort_dir=sort_dir)
         assert params.sort_dir == expected
 
     @pytest.mark.parametrize('_filter, expected', [
         pytest.param(None, None, id='None'),
-        pytest.param("", None, id='empty string'),
+        pytest.param("", "", id='empty string'),
         pytest.param("fake", 'fake', id='fake string'),
-        pytest.param(0, '0', id='zero'),
-        pytest.param(-1, '-1', id='negative'),
+        pytest.param(0, None, id='zero'),
+        pytest.param(-1, None, id='negative'),
         pytest.param("0", '0', id='zero string'),
         pytest.param("-1", '-1', id='negative string'),
-        pytest.param(5.5, '5.5', id='float'),
-        pytest.param(True, 'True', id='True'),
-        pytest.param(False, 'False', id='False'),
-        pytest.param({}, '{}', id='dict'),
+        pytest.param(5.5, None, id='float'),
+        pytest.param(True, None, id='True'),
+        pytest.param(False, None, id='False'),
+        pytest.param({}, None, id='dict'),
     ])
     def test_filter_prop(self, _filter: Any, expected: str | None):
-        params = SearchParams(init_filter=_filter)  # type: ignore
+        params = StubSearchParams(init_filter=_filter)  # type: ignore
         assert params.filter == expected
 
 

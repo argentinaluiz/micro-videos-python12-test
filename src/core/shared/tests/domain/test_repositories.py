@@ -1,15 +1,14 @@
 from dataclasses import dataclass
 from typing import Any, List
-from unittest import TestCase, mock
 from core.shared.domain.repositories import InMemoryRepository, InMemorySearchableRepository
-from core.shared.domain.entities import Entity
+from core.shared.domain.entities import AggregateRoot
 from core.shared.domain.search_params import SearchParams, SearchResult, SortDirection
 from core.shared.domain.value_objects import Uuid
 import pytest
 
 
 @dataclass(slots=True)
-class StubEntity(Entity):
+class StubEntity(AggregateRoot):
     id: Uuid
     name: str
 
@@ -87,7 +86,6 @@ class TestInMemoryRepository:
     def test_get_entity(self):
         entity = self.repository.get_entity()
         assert entity == StubEntity
-
 
 @dataclass(slots=True)
 class StubInMemorySearchableRepository(InMemorySearchableRepository[StubEntity, Uuid, str]):
@@ -222,7 +220,7 @@ class TestInMemorySearchableRepository:
 
     @pytest.mark.parametrize('search_params, expected_search_output', [
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=1, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -234,7 +232,7 @@ class TestInMemorySearchableRepository:
             id='asc page 1'
         ),
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=2, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -246,7 +244,7 @@ class TestInMemorySearchableRepository:
             id='asc page 2'
         ),
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=3, init_per_page=2, init_sort='name'
             ),
             SearchResult[StubEntity](
@@ -258,7 +256,7 @@ class TestInMemorySearchableRepository:
             id='asc page 3'
         ),
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=1, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -270,7 +268,7 @@ class TestInMemorySearchableRepository:
             id='desc page 1'
         ),
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=2, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -282,7 +280,7 @@ class TestInMemorySearchableRepository:
             id='desc page 2'
         ),
         pytest.param(
-            SearchParams[str](
+            SearchParams(
                 init_page=3, init_per_page=2, init_sort='name', init_sort_dir=SortDirection.DESC
             ),
             SearchResult[StubEntity](
@@ -321,7 +319,7 @@ class TestInMemorySearchableRepository:
         ]
         self.repository.bulk_insert(items)
 
-        result = self.repository.search(SearchParams[str](
+        result = self.repository.search(SearchParams(
             init_page=1, init_per_page=2, init_sort='name', init_filter='TEST'
         ))
         assert result == SearchResult[StubEntity](
@@ -331,7 +329,7 @@ class TestInMemorySearchableRepository:
             per_page=2,
         )
 
-        result = self.repository.search(SearchParams[str](
+        result = self.repository.search(SearchParams(
             init_page=2, init_per_page=2, init_sort='name', init_filter='TEST'
         ))
         assert result == SearchResult[StubEntity](

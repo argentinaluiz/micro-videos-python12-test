@@ -13,7 +13,7 @@ class SortDirection(Enum):
 
 SortDirectionValues = Literal['asc', 'desc']
 
-Filter = TypeVar('Filter', str, Any)
+Filter = TypeVar('Filter')
 
 # usar frozen causa um bug
 @dataclass(slots=True, kw_only=True)
@@ -72,9 +72,9 @@ class SearchParams(Generic[Filter]):
         self.sort_dir = sort_dir
 
     def _normalize_filter(self, _filter: Filter | None):
-        _filter = None if _filter is None or _filter == "" else cast(
-            Filter, str(_filter))
-        self.filter = _filter
+        from typing import Any, Generic, TypeVar, get_args
+        filter_type = get_args(self.__orig_bases__[0])[0]
+        self.filter = _filter if isinstance(_filter, filter_type) else None
 
     @classmethod
     def get_field(cls, entity_field: str) -> Field[Any]:
