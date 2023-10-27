@@ -1,12 +1,12 @@
 from typing import Any, Dict, List
 from urllib.parse import urlencode
-from core.category.application.use_cases import CategoryOutput
-from core.category.domain.entities import Category, CategoryId
-from core.category.domain.repositories import ICategoryRepository
+from core.cast_member.application.use_cases import CastMemberOutput
+from core.cast_member.domain.entities import CastMember, CastMemberId
+from core.cast_member.domain.repositories import ICastMemberRepository
 from core.shared.domain.exceptions import EntityValidationException, NotFoundException
-from django_app.category_app.api import CategoryController
-from .helpers import init_category_controller_all_none
-from django_app.category_app.tests.fixtures import CreateCategoryApiFixture, GetObjectCategoryApiFixture, ListCategoriesApiFixture, UpdateCategoryApiFixture
+from django_app.cast_member_app.api import CastMemberController
+from .helpers import init_cast_member_controller_all_none
+from django_app.cast_member_app.tests.fixtures import CreateCastMemberApiFixture, GetObjectCastMemberApiFixture, ListCastMembersApiFixture, UpdateCastMemberApiFixture
 from django_app.shared_app.tests.helpers import make_request
 from pydantic import ValidationError
 import pytest
@@ -14,19 +14,19 @@ from django_app.ioc_app.containers import container
 
 
 @pytest.mark.django_db
-class TestCategoryControllerPostMethodInt:
+class TestCastMemberControllerPostMethodInt:
 
-    controller: CategoryController
-    repo: ICategoryRepository
+    controller: CastMemberController
+    repo: ICastMemberRepository
 
     def setup_method(self):
-        self.repo = container.category.category_repository_django_orm()
-        self.controller = CategoryController(**{
-            **init_category_controller_all_none(),  # type: ignore
-            'create_use_case': container.category.create_category_use_case,
+        self.repo = container.cast_member.cast_member_repository_django_orm()
+        self.controller = CastMemberController(**{
+            **init_cast_member_controller_all_none(),  # type: ignore
+            'create_use_case': container.cast_member.create_cast_member_use_case,
         })
 
-    @pytest.mark.parametrize('request_body, exception', CreateCategoryApiFixture.arrange_for_invalid_requests())
+    @pytest.mark.parametrize('request_body, exception', CreateCastMemberApiFixture.arrange_for_invalid_requests())
     def test_invalid_request(self, request_body: Dict[str, Any], exception: ValidationError):
         request = make_request(
             http_method='post', send_data=request_body)
@@ -39,7 +39,7 @@ class TestCategoryControllerPostMethodInt:
             assert assert_error['msg'] == error['msg']
             assert assert_error['loc'] == error['loc']
 
-    @pytest.mark.parametrize('request_body, exception', CreateCategoryApiFixture.arrange_for_entity_validation_error())
+    @pytest.mark.parametrize('request_body, exception', CreateCastMemberApiFixture.arrange_for_entity_validation_error())
     def test_entity_validation_error(self, request_body: Dict[str, Any], exception: ValidationError):
         request = make_request(
             http_method='post', send_data=request_body)
@@ -52,7 +52,7 @@ class TestCategoryControllerPostMethodInt:
             assert assert_error['msg'] == error['msg']
             assert assert_error['loc'] == error['loc']
 
-    @pytest.mark.parametrize('request_body, response_body', CreateCategoryApiFixture.arrange_for_create())
+    @pytest.mark.parametrize('request_body, response_body', CreateCastMemberApiFixture.arrange_for_create())
     def test_post_method(self, request_body: Dict[str, Any], response_body: Dict[str, Any]):
         request = make_request(
             http_method='post', send_data=request_body)
@@ -60,36 +60,36 @@ class TestCategoryControllerPostMethodInt:
         response_data: Dict[str, Any] = response.data  # type: ignore
         assert response.status_code == 201
         assert 'data' in response_data
-        assert CreateCategoryApiFixture.keys_in_response() == list(
+        assert CreateCastMemberApiFixture.keys_in_response() == list(
             response_data['data'].keys())
 
         data = response_data['data']
-        category_created = self.repo.find_by_id(CategoryId(data['id']))
-        assert category_created is not None
-        output = CategoryOutput.from_entity(category_created)
-        serialized = CategoryController.serialize(output)
+        cast_member_created = self.repo.find_by_id(CastMemberId(data['id']))
+        assert cast_member_created is not None
+        output = CastMemberOutput.from_entity(cast_member_created)
+        serialized = CastMemberController.serialize(output)
 
         assert response.data == serialized  # type: ignore
         assert response.data == {  # type: ignore
             'data': {
                 **response_body,
-                'id': category_created.category_id.id,
+                'id': cast_member_created.cast_member_id.id,
                 'created_at': serialized['data']['created_at']
             }
         }
 
 
 @pytest.mark.django_db
-class TestCategoryControllerGetObjectMethodInt:
+class TestCastMemberControllerGetObjectMethodInt:
 
-    controller: CategoryController
-    repo: ICategoryRepository
+    controller: CastMemberController
+    repo: ICastMemberRepository
 
     def setup_method(self):
-        self.repo = container.category.category_repository_django_orm()
-        self.controller = CategoryController(**{
-            **init_category_controller_all_none(),  # type: ignore
-            'get_use_case': container.category.get_category_use_case
+        self.repo = container.cast_member.cast_member_repository_django_orm()
+        self.controller = CastMemberController(**{
+            **init_cast_member_controller_all_none(),  # type: ignore
+            'get_use_case': container.cast_member.get_cast_member_use_case
         })
 
     def test_throw_exception_when_uuid_is_invalid(self):
@@ -98,77 +98,76 @@ class TestCategoryControllerGetObjectMethodInt:
         assert len(assert_exception.value.errors()) == 1
         assert assert_exception.value.errors()[0]['type'] == 'uuid_parsing'
 
-    def test_throw_exception_when_category_not_found(self):
+    def test_throw_exception_when_cast_member_not_found(self):
         uuid_value = 'af46842e-027d-4c91-b259-3a3642144ba4'
         with pytest.raises(NotFoundException):
             self.controller.get_object(uuid_value)
 
     def test_get_object_method(self):
-        category = Category.fake().a_category().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
 
-        response = self.controller.get_object(category.category_id.id)
+        response = self.controller.get_object(cast_member.cast_member_id.id)
 
         assert response.status_code == 200
         response_data: Dict[str, Any] = response.data  # type: ignore
         assert 'data' in response_data
-        output = CategoryOutput.from_entity(category)
-        serialized = CategoryController.serialize(output)
-        assert GetObjectCategoryApiFixture.keys_in_category_response() == list(
+        output = CastMemberOutput.from_entity(cast_member)
+        serialized = CastMemberController.serialize(output)
+        assert GetObjectCastMemberApiFixture.keys_in_cast_member_response() == list(
             response_data['data'].keys())
         assert response.data == serialized  # type: ignore
 
         assert response_data == {
             'data': {
-                'id': category.category_id.id,
-                'name': category.name,
-                'description': category.description,
-                'is_active': category.is_active,
+                'id': cast_member.cast_member_id.id,
+                'name': cast_member.name,
+                'type': cast_member.type,
                 'created_at': serialized['data']['created_at']
             }
         }
 
 
 @pytest.mark.django_db
-class TestCategoryControllerGetMethodInt:
+class TestCastMemberControllerGetMethodInt:
 
-    controller: CategoryController
-    repo: ICategoryRepository
+    controller: CastMemberController
+    repo: ICastMemberRepository
 
     def setup_method(self):
-        self.repo = container.category.category_repository_django_orm()
-        self.controller = CategoryController(**{
-            **init_category_controller_all_none(),  # type: ignore
-            'list_use_case': container.category.list_categories_use_case
+        self.repo = container.cast_member.cast_member_repository_django_orm()
+        self.controller = CastMemberController(**{
+            **init_cast_member_controller_all_none(),  # type: ignore
+            'list_use_case': container.cast_member.list_cast_members_use_case
         })
 
     @pytest.mark.parametrize(
         'request_query_params, expected_entities, expected_meta, entities',
-        ListCategoriesApiFixture.arrange_incremented_with_created_at()
+        ListCastMembersApiFixture.arrange_incremented_with_created_at()
     )
     def test_execute_using_empty_search_params(self,
                                                request_query_params: Dict[str, Any],
-                                               expected_entities: List[Category],
+                                               expected_entities: List[CastMember],
                                                expected_meta: Dict[str, Any],
-                                               entities: List[Category]):
+                                               entities: List[CastMember]):
         self.repo.bulk_insert(entities)
         self.assert_response(request_query_params,
                              expected_entities, expected_meta)
 
     @pytest.mark.parametrize(
         'request_query_params, expected_entities, expected_meta, entities',
-        ListCategoriesApiFixture.arrange_unsorted()
+        ListCastMembersApiFixture.arrange_unsorted()
     )
     def test_execute_using_pagination_and_sort_and_filter(self,
                                                           request_query_params: Dict[str, Any],
-                                                          expected_entities: List[Category],
+                                                          expected_entities: List[CastMember],
                                                           expected_meta: Dict[str, Any],
-                                                          entities: List[Category]):
+                                                          entities: List[CastMember]):
         self.repo.bulk_insert(entities)
         self.assert_response(request_query_params,
                              expected_entities, expected_meta)
 
-    def assert_response(self, send_data: Dict[str, Any], expected_entities: List[Category], expected_meta: Dict[str, Any]):
+    def assert_response(self, send_data: Dict[str, Any], expected_entities: List[CastMember], expected_meta: Dict[str, Any]):
         request = make_request(
             http_method='get',
             url=f'/?{urlencode(send_data)}'
@@ -176,37 +175,38 @@ class TestCategoryControllerGetMethodInt:
         response = self.controller.get(request)
 
         assert response.status_code == 200
+        print(expected_entities)
         assert response.data == {  # type: ignore
-            'data': [self.serialize_category(category) for category in expected_entities],
+            'data': [self.serialize_cast_member(cast_member) for cast_member in expected_entities],
             'meta': expected_meta,
         }
 
-    def serialize_category(self, category: Category):
-        output = CategoryOutput.from_entity(category)
-        return CategoryController.serialize(output)['data']
+    def serialize_cast_member(self, cast_member: CastMember):
+        output = CastMemberOutput.from_entity(cast_member)
+        return CastMemberController.serialize(output)['data']
 
 
 @pytest.mark.django_db
-class TestCategoryControllerPatchMethodInt:
+class TestCastMemberControllerPatchMethodInt:
 
-    controller: CategoryController
-    repo: ICategoryRepository
+    controller: CastMemberController
+    repo: ICastMemberRepository
 
     def setup_method(self):
-        self.repo = container.category.category_repository_django_orm()
-        self.controller = CategoryController(**{
-            **init_category_controller_all_none(),  # type: ignore
-            'update_use_case': container.category.update_category_use_case
+        self.repo = container.cast_member.cast_member_repository_django_orm()
+        self.controller = CastMemberController(**{
+            **init_cast_member_controller_all_none(),  # type: ignore
+            'update_use_case': container.cast_member.update_cast_member_use_case
         })
 
-    @pytest.mark.parametrize('request_body, exception', UpdateCategoryApiFixture.arrange_for_invalid_requests())
+    @pytest.mark.parametrize('request_body, exception', UpdateCastMemberApiFixture.arrange_for_invalid_requests())
     def test_invalid_request(self, request_body: Dict[str, Any], exception: ValidationError):
-        category = Category.fake().a_category().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
         request = make_request(
             http_method='patch', send_data=request_body)
         with pytest.raises(ValidationError) as assert_exception:
-            self.controller.patch(request, category.category_id.id)
+            self.controller.patch(request, cast_member.cast_member_id.id)
         assert len(assert_exception.value.errors()) == len(exception.errors())
         # sourcery skip: no-loop-in-tests
         for assert_error, error in zip(assert_exception.value.errors(), exception.errors()):
@@ -214,14 +214,14 @@ class TestCategoryControllerPatchMethodInt:
             assert assert_error['msg'] == error['msg']
             assert assert_error['loc'] == error['loc']
 
-    @pytest.mark.parametrize('request_body, exception', UpdateCategoryApiFixture.arrange_for_entity_validation_error())
+    @pytest.mark.parametrize('request_body, exception', UpdateCastMemberApiFixture.arrange_for_entity_validation_error())
     def test_entity_validation_error(self, request_body: Dict[str, Any], exception: EntityValidationException):
-        category = Category.fake().a_category().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
         request = make_request(
             http_method='patch', send_data=request_body)
         with pytest.raises(EntityValidationException) as assert_exception:
-            self.controller.patch(request, category.category_id.id)
+            self.controller.patch(request, cast_member.cast_member_id.id)
         assert assert_exception.value.errors == exception.errors
 
     def test_throw_exception_when_uuid_is_invalid(self):
@@ -230,44 +230,41 @@ class TestCategoryControllerPatchMethodInt:
             self.controller.patch(request, 'fake api')
         assert assert_exception.value.errors()[0]['type'] == 'uuid_parsing'
 
-    def test_throw_exception_when_category_not_found(self):
+    def test_throw_exception_when_cast_member_not_found(self):
         uuid_value = 'af46842e-027d-4c91-b259-3a3642144ba4'
         request = make_request(http_method='patch', send_data={'name': 'test'})
         with pytest.raises(NotFoundException):
             self.controller.patch(request, uuid_value)
 
-    @pytest.mark.parametrize('request_body, response_body, entity', UpdateCategoryApiFixture.arrange_for_update())
+    @pytest.mark.parametrize('request_body, response_body, entity', UpdateCastMemberApiFixture.arrange_for_update())
     def test_patch_method(self,
                         request_body: Dict[str, Any],
                         response_body: Dict[str, Any],
-                        entity: Category):
+                        entity: CastMember):
         self.repo.insert(entity)
         request = make_request(
             http_method='put', send_data=request_body)
-        response = self.controller.patch(request, entity.category_id.id)
+        response = self.controller.patch(request, entity.cast_member_id.id)
 
         response_data: Dict[str, Any] = response.data  # type: ignore
         assert response.status_code == 200
         assert 'data' in response_data
-        assert CreateCategoryApiFixture.keys_in_response() == list(
+        assert CreateCastMemberApiFixture.keys_in_response() == list(
             response_data['data'].keys())
 
         data = response_data['data']
-        category_updated = self.repo.find_by_id(CategoryId(data['id']))
-        assert category_updated is not None
-        output = CategoryOutput.from_entity(category_updated)
-        serialized = CategoryController.serialize(output)
+        cast_member_updated = self.repo.find_by_id(CastMemberId(data['id']))
+        assert cast_member_updated is not None
+        output = CastMemberOutput.from_entity(cast_member_updated)
+        serialized = CastMemberController.serialize(output)
 
         assert response.data == serialized  # type: ignore
         assert response.data == {  # type: ignore
             'data': {
-                'id': category_updated.category_id.id,
-                'name': response_body.get('name', category_updated.name),
-                'description': response_body.get(
-                    'description', category_updated.description
-                ),
-                'is_active': response_body.get(
-                    'is_active', category_updated.is_active
+                'id': cast_member_updated.cast_member_id.id,
+                'name': response_body.get('name', cast_member_updated.name),
+                'type': response_body.get(
+                    'type', cast_member_updated.type
                 ),
                 'created_at': serialized['data']['created_at'],
             }
@@ -275,16 +272,16 @@ class TestCategoryControllerPatchMethodInt:
 
 
 @pytest.mark.django_db
-class TestCategoryControllerDeleteMethodInt:
+class TestCastMemberControllerDeleteMethodInt:
 
-    controller: CategoryController
-    repo: ICategoryRepository
+    controller: CastMemberController
+    repo: ICastMemberRepository
 
     def setup_class(self):
-        self.repo = container.category.category_repository_django_orm()
-        self.controller = CategoryController(**{
-            **init_category_controller_all_none(),  # type: ignore
-            'delete_use_case': container.category.delete_category_use_case
+        self.repo = container.cast_member.cast_member_repository_django_orm()
+        self.controller = CastMemberController(**{
+            **init_cast_member_controller_all_none(),  # type: ignore
+            'delete_use_case': container.cast_member.delete_cast_member_use_case
         })
 
     def test_throw_exception_when_uuid_is_invalid(self):
@@ -294,17 +291,17 @@ class TestCategoryControllerDeleteMethodInt:
         assert len(assert_exception.value.errors()) == 1
         assert assert_exception.value.errors()[0]['type'] == 'uuid_parsing'
 
-    def test_throw_exception_when_category_not_found(self):
+    def test_throw_exception_when_cast_member_not_found(self):
         uuid_value = 'af46842e-027d-4c91-b259-3a3642144ba4'
         request = make_request(http_method='delete')
         with pytest.raises(NotFoundException):
             self.controller.delete(request, uuid_value)
 
     def test_delete_method(self):
-        category = Category.fake().a_category().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
         request = make_request(http_method='delete')
-        response = self.controller.delete(request, category.category_id.id)
+        response = self.controller.delete(request, cast_member.cast_member_id.id)
 
         assert response.status_code == 204
-        assert self.repo.find_by_id(category.category_id) is None
+        assert self.repo.find_by_id(cast_member.cast_member_id) is None

@@ -1,4 +1,4 @@
-def init_category_controller_all_none():
+def init_cast_member_controller_all_none():
     return {
         'list_use_case': None,
         'get_use_case': None,

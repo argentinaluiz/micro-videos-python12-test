@@ -42,8 +42,8 @@ class CreateCastMemberUseCase(UseCase):
         self.cast_member_repo.insert(cast_member)
         return self.__to_output(cast_member)
 
-    def __to_output(self, category: CastMember):
-        return self.Output.from_entity(category)
+    def __to_output(self, cast_member: CastMember):
+        return self.Output.from_entity(cast_member)
 
     @pydantic_dataclass(slots=True, frozen=True)
     class Input:
@@ -67,8 +67,8 @@ class GetCastMemberUseCase(UseCase):
         else:
             raise NotFoundException(str(input_param.id), CastMember.__name__)
 
-    def __to_output(self, category: CastMember):
-        return self.Output.from_entity(category)
+    def __to_output(self, cast_member: CastMember):
+        return self.Output.from_entity(cast_member)
 
     @pydantic_dataclass(slots=True, frozen=True)
     class Input:
@@ -115,8 +115,8 @@ class UpdateCastMemberUseCase(UseCase):
     cast_member_repo: ICastMemberRepository
 
     def execute(self, input_param: 'Input') -> 'Output':
-        category_id = CastMemberId(str(input_param.id))
-        entity = self.cast_member_repo.find_by_id(category_id)
+        cast_member_id = CastMemberId(str(input_param.id))
+        entity = self.cast_member_repo.find_by_id(cast_member_id)
 
         if entity is None:
             raise NotFoundException(str(input_param.id), CastMember.__name__)
@@ -154,8 +154,8 @@ class DeleteCastMemberUseCase(UseCase):
     cast_member_repo: ICastMemberRepository
 
     def execute(self, input_param: 'Input') -> None:
-        category_id = CastMemberId(str(input_param.id))
-        self.cast_member_repo.delete(category_id)
+        cast_member_id = CastMemberId(str(input_param.id))
+        self.cast_member_repo.delete(cast_member_id)
 
     @pydantic_dataclass(slots=True, frozen=True)
     class Input:
