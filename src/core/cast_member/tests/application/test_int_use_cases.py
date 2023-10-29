@@ -591,7 +591,7 @@ class TestUpdateCastMemberUseCaseInt:
         assert assert_error.value.args[0] == f"CastMember with id {str(_id)} not found"
 
     # Defina a fixture dentro da classe
-    @ pytest.fixture
+    @pytest.fixture
     def execute_fixture(self, request: SubRequest):
         entity = request.param['entity']
         self.cast_member_repo.insert(entity)

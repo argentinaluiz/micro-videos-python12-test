@@ -64,7 +64,7 @@ class TestCastMember:
         cast_member.change_name(new_name)
         assert cast_member.name == new_name
 
-    def test_should_generate_an_error_in_change_description(self):
+    def test_should_generate_an_error_in_change_type(self):
         cast_member = CastMember(cast_member_id=CastMemberId(
         ), name='Test CastMember', type=CastMember.DIRECTOR)
         cast_member.change_type('fake value')

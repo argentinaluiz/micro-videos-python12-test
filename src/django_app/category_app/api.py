@@ -30,7 +30,6 @@ class CategoryController(APIView):
         input_param = CreateCategoryUseCase.Input(
             **request.data)  # type: ignore
         output = self.create_use_case().execute(input_param)
-        print(output)
         body = CategoryController.serialize(output)
         return Response(body, status=http.HTTP_201_CREATED)
 

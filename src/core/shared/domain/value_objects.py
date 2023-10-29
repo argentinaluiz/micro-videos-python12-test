@@ -1,10 +1,15 @@
+import abc
 from abc import ABC
 from dataclasses import dataclass, field
+from typing import Any
 from uuid import uuid4, UUID as PythonUUID
 
 
 class ValueObject(ABC):
-    pass
+
+    @abc.abstractmethod
+    def equals(self, other: Any) -> bool:
+        raise NotImplementedError
 
 
 @dataclass(frozen=True, slots=True)
@@ -23,9 +28,17 @@ class Uuid(ValueObject):
             PythonUUID(self.id)
         except ValueError as ex:
             raise InvalidUuidException(self.id) from ex
-    
+        except AttributeError as ex:
+            raise InvalidUuidException(self.id) from ex
+
     def __str__(self):
         return self.id
+    
+    def __eq__(self, __value: object) -> bool:
+        return self.equals(__value)
+
+    def equals(self, other: Any) -> bool:
+        return self.id == other.id if isinstance(other, self.__class__) else False
 
 
 class InvalidUuidException(Exception):

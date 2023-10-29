@@ -65,11 +65,11 @@ class TestCastMemberDjangoRepository:
 
         assert self.repo.find_by_id(CastMemberId()) is None
 
-        category = CastMember.fake().a_director().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
 
-        category_found = self.repo.find_by_id(category.cast_member_id)
-        assert category_found == category
+        cast_member_found = self.repo.find_by_id(cast_member.cast_member_id)
+        assert cast_member_found == cast_member
 
     def test_find_all(self):
         cast_members = CastMember.fake().the_cast_members(2)\
@@ -98,20 +98,20 @@ class TestCastMemberDjangoRepository:
             0] == f"CastMember with id {cast_member.cast_member_id.id} not found"
 
     def test_update(self):
-        category = CastMember.fake().a_director().build()
-        self.repo.insert(category)
+        cast_member = CastMember.fake().a_director().build()
+        self.repo.insert(cast_member)
 
-        category.change_name('Movie changed')
-        category.change_type(CastMember.ACTOR)
+        cast_member.change_name('Movie changed')
+        cast_member.change_type(CastMember.ACTOR)
 
-        self.repo.update(category)
+        self.repo.update(cast_member)
 
-        model = CastMemberModel.objects.get(pk=category.cast_member_id.id)
+        model = CastMemberModel.objects.get(pk=cast_member.cast_member_id.id)
 
-        assert str(model.id) == category.cast_member_id.id
-        assert model.name == category.name
-        assert model.type == category.type
-        assert model.created_at == category.created_at
+        assert str(model.id) == cast_member.cast_member_id.id
+        assert model.name == cast_member.name
+        assert model.type == cast_member.type
+        assert model.created_at == cast_member.created_at
 
     def test_throw_not_found_exception_in_delete(self):
         cast_member_id = CastMemberId()
@@ -183,7 +183,6 @@ class TestCastMemberDjangoRepository:
             init_filter=CastMemberFilter(name='E')
         )
         search_result = self.repo.search(search_params)
-        print(search_result)
         assert search_result == ICastMemberRepository.SearchResult(
             items=[
                 cast_members[0],

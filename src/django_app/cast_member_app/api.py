@@ -31,7 +31,6 @@ class CastMemberController(APIView):
         input_param = CreateCastMemberUseCase.Input(
             **request.data)  # type: ignore
         output = self.create_use_case().execute(input_param)
-        print(output)
         body = CastMemberController.serialize(output)
         return Response(body, status=http.HTTP_201_CREATED)
 

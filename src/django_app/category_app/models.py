@@ -14,7 +14,7 @@ class CategoryModel(models.Model):
     id = models.UUIDField(primary_key=True, editable=True)
     name = models.CharField(max_length=255)
     description = models.TextField(null=True)
-    is_active = models.BooleanField()
+    is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField()
 
     class Meta:  # type: ignore

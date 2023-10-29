@@ -47,12 +47,12 @@ class TestCastMemberModel(unittest.TestCase):
     def test_create(self):
         arrange = {
             'id': 'af46842e-027d-4c91-b259-3a3642144ba4',
-            'name': 'Movie',
+            'name': 'cast member test',
             'type': CastMember.DIRECTOR,
             'created_at': timezone.now()
         }
-        category = CastMemberModel.objects.create(**arrange)
-        self.assertEqual(category.id, arrange['id'])
-        self.assertEqual(category.name, arrange['name'])
-        self.assertEqual(category.type, arrange['type'])
-        self.assertEqual(category.created_at, arrange['created_at'])
+        cast_member = CastMemberModel.objects.create(**arrange)
+        self.assertEqual(cast_member.id, arrange['id'])
+        self.assertEqual(cast_member.name, arrange['name'])
+        self.assertEqual(cast_member.type, arrange['type'])
+        self.assertEqual(cast_member.created_at, arrange['created_at'])
